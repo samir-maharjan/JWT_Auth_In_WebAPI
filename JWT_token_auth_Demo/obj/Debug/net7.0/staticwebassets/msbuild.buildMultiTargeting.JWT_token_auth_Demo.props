@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\JWT_token_auth_Demo.props" />
+</Project>
