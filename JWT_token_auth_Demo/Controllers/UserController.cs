@@ -20,7 +20,7 @@ namespace JWT_token_auth_Demo.Controllers
     [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
-    //[EnableCors("MyPolicy")]
+    [EnableCors("MyPolicy")]
     public class UserController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;

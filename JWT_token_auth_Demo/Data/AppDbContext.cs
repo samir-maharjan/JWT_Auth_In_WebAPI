@@ -13,7 +13,8 @@ namespace JWT_token_auth_Demo.Data
         }
 
         public DbSet<OTPVerificationLogs> OTPVerificationLogs { get; set; }
-
+        public DbSet<usr01users> usr01users { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

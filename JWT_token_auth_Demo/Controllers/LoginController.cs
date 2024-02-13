@@ -85,6 +85,7 @@ namespace JWT_token_auth_Demo.Controllers
         }
         [HttpGet]
         [Route("SeedDefaultData")]
+
         public async Task<IActionResult> SeedDefaultData()
         {
             // Loop through each role name in the EnumApplicationUserType enumeration
@@ -193,7 +194,6 @@ namespace JWT_token_auth_Demo.Controllers
         }
 
         [HttpPost("Forgot-password")]
-        [AllowAnonymous]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordVm model)
         {
             try
@@ -236,7 +236,6 @@ namespace JWT_token_auth_Demo.Controllers
         }
 
         [HttpPost("reset-password")]
-        [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(ResetPasswordVm model)
         {
             try

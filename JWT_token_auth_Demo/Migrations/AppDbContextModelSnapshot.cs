@@ -124,6 +124,70 @@ namespace JWTtokenauthDemo.Migrations
                     b.ToTable("OTPVerificationLogs");
                 });
 
+            modelBuilder.Entity("JWT_token_auth_Demo.Models.usr01users", b =>
+                {
+                    b.Property<string>("usr01uin")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("can_view_all_data")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("can_view_all_department")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("usr01address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("usr01approved")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("usr01contact_number")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("usr01deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("usr01email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("usr01first_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("usr01last_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("usr01occupation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("usr01post")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("usr01profile_img_path")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("usr01reg_role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("usr01status")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("usr01user_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("usr01uin");
+
+                    b.ToTable("usr01users");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
