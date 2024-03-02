@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
+using System;
 
 namespace JWT_token_auth_Demo.Controllers
 {
@@ -18,11 +20,13 @@ namespace JWT_token_auth_Demo.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly AppDbContext _dbcontext;
+        private readonly IWebHostEnvironment environment;
 
-        public AccountController(UserManager<ApplicationUser> userManager,AppDbContext appDbContext)
+        public AccountController(UserManager<ApplicationUser> userManager,AppDbContext appDbContext, IWebHostEnvironment _environment)
         {
             _userManager = userManager;
             _dbcontext = appDbContext;
+            environment = _environment;
         }
 
         [HttpPost]
@@ -36,6 +40,26 @@ namespace JWT_token_auth_Demo.Controllers
             }*/
             try
             {
+
+                    string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(RegVM.ProfileImg!.FileName)}";
+                    string yearMonthFolder = DateTime.Now.ToString("yyyy/MM");
+                    string uploadsFolder = Path.Combine(environment.WebRootPath, "ProfileImages", yearMonthFolder);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await RegVM.ProfileImg!.CopyToAsync(stream);
+                    }
+
+                    // Store file information
+                   var uploadedBankFiles=($"~/ProfileImages/{yearMonthFolder}/{uniqueFileName}");
+
+                
 
                 var existingUser = await _userManager.FindByEmailAsync(RegVM.Email);
                 if (existingUser != null)
@@ -69,11 +93,13 @@ namespace JWT_token_auth_Demo.Controllers
                         usr01last_name = RegVM.LastName,
                         usr01occupation = RegVM.Occupation,
                         usr01post = RegVM.Post,
-                        usr01profile_img_path = "",
                         usr01reg_role = RegVM.RegRoles,
                         usr01status = true,
-                        usr01uin = user.Id
-                    };
+                        usr01uin = user.Id,
+                        // Assign uploaded file information to VideoKycInfo model properties
+                        //videoKycInfo.ImageFileName = string.Join(",", bankFiles.Select(f => f.FileName));
+                        usr01profile_img_path = string.Join(",", uploadedBankFiles)
+                };
 
                     //todo:Have to work on the logs also
                     /*  log05account_activities log05account_activities = new log05account_activities()
