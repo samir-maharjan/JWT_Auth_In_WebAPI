@@ -41,7 +41,15 @@ namespace JWT_token_auth_Demo.Controllers
             try
             {
 
-                    string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(RegVM.ProfileImg!.FileName)}";
+                string[] allowedExtensions = { ".jpg", ".jpeg", ".png" };
+                string fileExtension = Path.GetExtension(RegVM.ProfileImg!.FileName);
+
+                if (Array.IndexOf(allowedExtensions, fileExtension.ToLower()) == -1)
+                {
+                     return BadRequest("Invalid file extension. Only JPG, JPEG, and PNG files are allowed.");
+                }
+
+                string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(RegVM.ProfileImg!.FileName)}";
                     string yearMonthFolder = DateTime.Now.ToString("yyyy/MM");
                     string uploadsFolder = Path.Combine(environment.WebRootPath, "ProfileImages", yearMonthFolder);
                     string filePath = Path.Combine(uploadsFolder, uniqueFileName);
@@ -58,8 +66,6 @@ namespace JWT_token_auth_Demo.Controllers
 
                     // Store file information
                    var uploadedBankFiles=($"~/ProfileImages/{yearMonthFolder}/{uniqueFileName}");
-
-                
 
                 var existingUser = await _userManager.FindByEmailAsync(RegVM.Email);
                 if (existingUser != null)
