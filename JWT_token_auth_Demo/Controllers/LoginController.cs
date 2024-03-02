@@ -43,7 +43,7 @@ namespace JWT_token_auth_Demo.Controllers
             _configuration = configuration;
             dbContext = context;
         }
-
+        
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginModel model)
@@ -53,7 +53,7 @@ namespace JWT_token_auth_Demo.Controllers
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
-
+                var userDetails = dbContext.usr01users.Where(x => x.usr01uin == user.Id).FirstOrDefault();
                 var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
@@ -68,18 +68,24 @@ namespace JWT_token_auth_Demo.Controllers
 
                 var token = GetToken(authClaims);
 
-                var result = new LoggedUserInfo
+                var usersInfo = new ActiveUserVM
                 {
-                    Id = user.Id,
                     UserName = user.UserName,
+                    ID = user.Id,
                     Email = user.Email,
-                    AssociatedRoles = userRoles,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Occupation = userDetails.usr01occupation,
+                    Post = userDetails.usr01post,
+                    ContactNumber=userDetails.usr01contact_number,
+                    Role = userDetails.usr01reg_role,
+                    Address = userDetails.usr01address,
                     Token = new JwtSecurityTokenHandler().WriteToken(token),
                     Expiration = token.ValidTo
                 };
 
 
-                return Ok(result);
+                return Ok(usersInfo);
             }
             return Unauthorized();
         }

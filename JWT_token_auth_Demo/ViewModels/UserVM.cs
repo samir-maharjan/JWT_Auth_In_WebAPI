@@ -24,4 +24,23 @@ namespace JWT_token_auth_Demo.Viewmodel
         public string Password { get; set; }
 
     }
+
+
+    public class ActiveUserVM
+    {
+        public string ID { get; set; }
+        public string UserName { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Occupation { get; set; }
+        public string Post { get; set; }
+        public string Address { get; set; }
+        public string ContactNumber { get; set; }
+        public string Email { get; set; }
+        //will work on the role later, there may be many role but for now let it be string
+        public string Role { get; set; }
+        public string Token { get; set; }
+        public DateTime Expiration { get; set; }
+
+    }
 }
