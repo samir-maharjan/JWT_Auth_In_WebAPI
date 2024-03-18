@@ -41,32 +41,32 @@ namespace JWT_token_auth_Demo.Controllers
             try
             {
 
-              /*  string[] allowedExtensions = { ".jpg", ".jpeg", ".png" };
+                string[] allowedExtensions = { ".jpg", ".jpeg", ".png" };
                 string fileExtension = Path.GetExtension(RegVM.ProfileImg!.FileName);
 
                 if (Array.IndexOf(allowedExtensions, fileExtension.ToLower()) == -1)
                 {
-                     return BadRequest("Invalid file extension. Only JPG, JPEG, and PNG files are allowed.");
+                    return BadRequest("Invalid file extension. Only JPG, JPEG, and PNG files are allowed.");
                 }
 
                 string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(RegVM.ProfileImg!.FileName)}";
-                    string yearMonthFolder = DateTime.Now.ToString("yyyy/MM");
-                    string uploadsFolder = Path.Combine(environment.WebRootPath, "ProfileImages", yearMonthFolder);
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                string yearMonthFolder = DateTime.Now.ToString("yyyy/MM");
+                string uploadsFolder = Path.Combine("ProfileImages", yearMonthFolder);
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                    if (!Directory.Exists(uploadsFolder))
-                    {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
 
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await RegVM.ProfileImg!.CopyToAsync(stream);
-                    }
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await RegVM.ProfileImg!.CopyToAsync(stream);
+                }
 
-                    // Store file information
-                   var uploadedProfileImage=($"~/ProfileImages/{yearMonthFolder}/{uniqueFileName}");
-*/
+                // Store file information
+                var uploadedProfileImage = ($"~/ProfileImages/{yearMonthFolder}/{uniqueFileName}");
+
                 var existingUser = await _userManager.FindByEmailAsync(RegVM.Email);
                 if (existingUser != null)
                 {
@@ -104,7 +104,7 @@ namespace JWT_token_auth_Demo.Controllers
                         usr01uin = user.Id,
                         // Assign uploaded file information to VideoKycInfo model properties
                         //videoKycInfo.ImageFileName = string.Join(",", bankFiles.Select(f => f.FileName));
-                        usr01profile_img_path = ""//string.Join(",", uploadedProfileImage)
+                        usr01profile_img_path = string.Join(",", uploadedProfileImage)
                 };
 
                     //todo:Have to work on the logs also
