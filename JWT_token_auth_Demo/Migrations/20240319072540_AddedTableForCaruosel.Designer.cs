@@ -4,6 +4,7 @@ using JWT_token_auth_Demo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JWTtokenauthDemo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240319072540_AddedTableForCaruosel")]
+    partial class AddedTableForCaruosel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -150,13 +153,6 @@ namespace JWTtokenauthDemo.Migrations
                     b.Property<bool>("car01status")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("car01updated_date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("car01updated_name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("car01uin");
 
                     b.ToTable("car01caruosel");
@@ -181,13 +177,6 @@ namespace JWTtokenauthDemo.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("usr01contact_number")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("usr01created_date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("usr01created_name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -223,13 +212,6 @@ namespace JWTtokenauthDemo.Migrations
 
                     b.Property<bool>("usr01status")
                         .HasColumnType("bit");
-
-                    b.Property<DateTime>("usr01updated_date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("usr01updated_name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("usr01user_name")
                         .IsRequired()

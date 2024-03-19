@@ -4,6 +4,7 @@ using JWT_token_auth_Demo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JWTtokenauthDemo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240319100346_AddedFieldsInTableUser")]
+    partial class AddedFieldsInTableUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -173,6 +176,10 @@ namespace JWTtokenauthDemo.Migrations
                     b.Property<bool>("can_view_all_department")
                         .HasColumnType("bit");
 
+                    b.Property<string>("cusr01updated_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("usr01address")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -226,10 +233,6 @@ namespace JWTtokenauthDemo.Migrations
 
                     b.Property<DateTime>("usr01updated_date")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("usr01updated_name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("usr01user_name")
                         .IsRequired()

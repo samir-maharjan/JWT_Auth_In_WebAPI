@@ -104,8 +104,12 @@ namespace JWT_token_auth_Demo.Controllers
                         usr01uin = user.Id,
                         // Assign uploaded file information to VideoKycInfo model properties
                         //videoKycInfo.ImageFileName = string.Join(",", bankFiles.Select(f => f.FileName));
-                        usr01profile_img_path = string.Join(",", uploadedProfileImage)
-                };
+                        usr01profile_img_path = string.Join(",", uploadedProfileImage),
+                        usr01created_name = "admin",
+                        usr01updated_name ="admin",
+                        usr01created_date=DateTime.Now,
+                        usr01updated_date = DateTime.Now
+                    };
 
                     //todo:Have to work on the logs also
                     /*  log05account_activities log05account_activities = new log05account_activities()
