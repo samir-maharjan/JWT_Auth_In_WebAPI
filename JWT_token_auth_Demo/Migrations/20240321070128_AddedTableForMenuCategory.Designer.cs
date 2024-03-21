@@ -4,6 +4,7 @@ using JWT_token_auth_Demo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JWTtokenauthDemo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240321070128_AddedTableForMenuCategory")]
+    partial class AddedTableForMenuCategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,50 +201,6 @@ namespace JWTtokenauthDemo.Migrations
                     b.HasKey("cat01uin");
 
                     b.ToTable("cat01menu_category");
-                });
-
-            modelBuilder.Entity("JWT_token_auth_Demo.Models.cat02menu_sub_category", b =>
-                {
-                    b.Property<string>("cat02uin")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("cat02cat01uin")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("cat02created_date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("cat02created_name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("cat02deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("cat02status")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("cat02sub_category_code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("cat02sub_category_title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("cat02updated_date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("cat02updated_name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("cat02uin");
-
-                    b.HasIndex("cat02cat01uin");
-
-                    b.ToTable("cat02menu_sub_category");
                 });
 
             modelBuilder.Entity("JWT_token_auth_Demo.Models.usr01users", b =>
@@ -455,17 +414,6 @@ namespace JWTtokenauthDemo.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("JWT_token_auth_Demo.Models.cat02menu_sub_category", b =>
-                {
-                    b.HasOne("JWT_token_auth_Demo.Models.cat01menu_category", "cat01menu_category")
-                        .WithMany("sub_category")
-                        .HasForeignKey("cat02cat01uin")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("cat01menu_category");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -515,11 +463,6 @@ namespace JWTtokenauthDemo.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("JWT_token_auth_Demo.Models.cat01menu_category", b =>
-                {
-                    b.Navigation("sub_category");
                 });
 #pragma warning restore 612, 618
         }

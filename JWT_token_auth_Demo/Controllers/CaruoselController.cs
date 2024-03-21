@@ -1,6 +1,8 @@
 ﻿using JWT_token_auth_Demo.Data;
 using JWT_token_auth_Demo.Models;
 using JWT_token_auth_Demo.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +11,10 @@ using System.Text.RegularExpressions;
 
 namespace JWT_token_auth_Demo.Controllers
 {
+    [Route("api/[controller]")]
+    [AllowAnonymous]
+    [ApiController]
+    [EnableCors("MyPolicy")]
     public class CaruoselController : ControllerBase
     {
 
