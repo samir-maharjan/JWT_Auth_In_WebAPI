@@ -102,6 +102,9 @@ internal class Program
 
         #endregion
         var app = builder.Build();
+
+        app.UseStaticFiles();
+
         app.UseCors("MyPolicy");
 
 

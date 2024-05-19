@@ -1,0 +1,14 @@
+﻿# .NET Core
+*.obj
+*.dll
+*.exe
+*.pdb
+*.user
+*.suo
+*.tmp
+*.DS_Store
+bin/
+obj/
+[Bb]in/
+[Oo]bj/
+.vs/

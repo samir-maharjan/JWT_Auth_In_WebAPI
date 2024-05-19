@@ -4151,7 +4151,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Asus\\.nuget\\packages\\": {}
+    "C:\\Users\\mails\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
@@ -4159,11 +4159,11 @@
       "projectUniqueName": "D:\\Projects\\Demo\\JWT_token_auth_Demo\\JWT_token_auth_Demo\\JWT_token_auth_Demo.csproj",
       "projectName": "JWT_token_auth_Demo",
       "projectPath": "D:\\Projects\\Demo\\JWT_token_auth_Demo\\JWT_token_auth_Demo\\JWT_token_auth_Demo.csproj",
-      "packagesPath": "C:\\Users\\Asus\\.nuget\\packages\\",
+      "packagesPath": "C:\\Users\\mails\\.nuget\\packages\\",
       "outputPath": "D:\\Projects\\Demo\\JWT_token_auth_Demo\\JWT_token_auth_Demo\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Asus\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\mails\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -4183,6 +4183,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -4239,7 +4244,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204\\RuntimeIdentifierGraph.json"
       }
     }
   }

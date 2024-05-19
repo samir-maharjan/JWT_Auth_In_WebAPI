@@ -75,9 +75,10 @@ D:\Projects\Demo\JWT_token_auth_Demo\JWT_token_auth_Demo\obj\Release\net7.0\stat
 D:\Projects\Demo\JWT_token_auth_Demo\JWT_token_auth_Demo\obj\Release\net7.0\staticwebassets.build.json
 D:\Projects\Demo\JWT_token_auth_Demo\JWT_token_auth_Demo\obj\Release\net7.0\staticwebassets.development.json
 D:\Projects\Demo\JWT_token_auth_Demo\JWT_token_auth_Demo\obj\Release\net7.0\scopedcss\bundle\JWT_token_auth_Demo.styles.css
-D:\Projects\Demo\JWT_token_auth_Demo\JWT_token_auth_Demo\obj\Release\net7.0\JWT_token_auth_Demo.csproj.CopyComplete
 D:\Projects\Demo\JWT_token_auth_Demo\JWT_token_auth_Demo\obj\Release\net7.0\JWT_token_auth_Demo.dll
 D:\Projects\Demo\JWT_token_auth_Demo\JWT_token_auth_Demo\obj\Release\net7.0\refint\JWT_token_auth_Demo.dll
 D:\Projects\Demo\JWT_token_auth_Demo\JWT_token_auth_Demo\obj\Release\net7.0\JWT_token_auth_Demo.pdb
 D:\Projects\Demo\JWT_token_auth_Demo\JWT_token_auth_Demo\obj\Release\net7.0\JWT_token_auth_Demo.genruntimeconfig.cache
 D:\Projects\Demo\JWT_token_auth_Demo\JWT_token_auth_Demo\obj\Release\net7.0\ref\JWT_token_auth_Demo.dll
+D:\Projects\Demo\JWT_token_auth_Demo\JWT_token_auth_Demo\obj\Release\net7.0\JWT_token_auth_Demo.sourcelink.json
+D:\Projects\Demo\JWT_token_auth_Demo\JWT_token_auth_Demo\obj\Release\net7.0\JWT_toke.960BAA40.Up2Date

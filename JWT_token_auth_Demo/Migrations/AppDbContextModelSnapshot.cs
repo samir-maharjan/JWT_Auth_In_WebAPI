@@ -124,6 +124,128 @@ namespace JWTtokenauthDemo.Migrations
                     b.ToTable("OTPVerificationLogs");
                 });
 
+            modelBuilder.Entity("JWT_token_auth_Demo.Models.agent01profile", b =>
+                {
+                    b.Property<string>("agent01uin")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("agent01address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("agent01code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("agent01contact")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("agent01created_date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("agent01created_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("agent01deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("agent01description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("agent01designation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("agent01email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("agent01experience")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("agent01fb_link")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("agent01linked_in_profile")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("agent01name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("agent01skill")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("agent01status")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("agent01updated_date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("agent01updated_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("agent01website_link")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("agent01uin");
+
+                    b.ToTable("agent01profile");
+                });
+
+            modelBuilder.Entity("JWT_token_auth_Demo.Models.agent02profile_img", b =>
+                {
+                    b.Property<string>("agent02uin")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("agent02agent01uin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("agent02created_date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("agent02created_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("agent02deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("agent02img_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("agent02img_path")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("agent02status")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("agent02updated_date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("agent02updated_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("agent02uin");
+
+                    b.HasIndex("agent02agent01uin");
+
+                    b.ToTable("agent02profile_img");
+                });
+
             modelBuilder.Entity("JWT_token_auth_Demo.Models.car01caruosel", b =>
                 {
                     b.Property<string>("car01uin")
@@ -242,6 +364,128 @@ namespace JWTtokenauthDemo.Migrations
                     b.HasIndex("cat02cat01uin");
 
                     b.ToTable("cat02menu_sub_category");
+                });
+
+            modelBuilder.Entity("JWT_token_auth_Demo.Models.pro01product", b =>
+                {
+                    b.Property<string>("pro01uin")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("pro01address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("pro01area")
+                        .HasColumnType("float");
+
+                    b.Property<int>("pro01bathroom_count")
+                        .HasColumnType("int");
+
+                    b.Property<string>("pro01cat01uin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("pro01cat02uin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("pro01code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("pro01created_date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("pro01created_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("pro01deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("pro01description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("pro01details")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("pro01map_link")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("pro01name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("pro01price")
+                        .HasColumnType("float");
+
+                    b.Property<int>("pro01room_count")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("pro01status")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("pro01updated_date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("pro01updated_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("pro01video_link")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("pro01uin");
+
+                    b.ToTable("pro01product");
+                });
+
+            modelBuilder.Entity("JWT_token_auth_Demo.Models.pro02product_files", b =>
+                {
+                    b.Property<string>("pro02uin")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("pro02created_date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("pro02created_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("pro02deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("pro02img_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("pro02img_path")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("pro02pro01uin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("pro02status")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("pro02updated_date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("pro02updated_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("pro02uin");
+
+                    b.HasIndex("pro02pro01uin");
+
+                    b.ToTable("pro02product_files");
                 });
 
             modelBuilder.Entity("JWT_token_auth_Demo.Models.usr01users", b =>
@@ -455,6 +699,17 @@ namespace JWTtokenauthDemo.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("JWT_token_auth_Demo.Models.agent02profile_img", b =>
+                {
+                    b.HasOne("JWT_token_auth_Demo.Models.agent01profile", "agent01profile")
+                        .WithMany("agent02profile_img")
+                        .HasForeignKey("agent02agent01uin")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("agent01profile");
+                });
+
             modelBuilder.Entity("JWT_token_auth_Demo.Models.cat02menu_sub_category", b =>
                 {
                     b.HasOne("JWT_token_auth_Demo.Models.cat01menu_category", "cat01menu_category")
@@ -464,6 +719,17 @@ namespace JWTtokenauthDemo.Migrations
                         .IsRequired();
 
                     b.Navigation("cat01menu_category");
+                });
+
+            modelBuilder.Entity("JWT_token_auth_Demo.Models.pro02product_files", b =>
+                {
+                    b.HasOne("JWT_token_auth_Demo.Models.pro01product", "pro01product")
+                        .WithMany("pro02product_files")
+                        .HasForeignKey("pro02pro01uin")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("pro01product");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -517,9 +783,19 @@ namespace JWTtokenauthDemo.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("JWT_token_auth_Demo.Models.agent01profile", b =>
+                {
+                    b.Navigation("agent02profile_img");
+                });
+
             modelBuilder.Entity("JWT_token_auth_Demo.Models.cat01menu_category", b =>
                 {
                     b.Navigation("sub_category");
+                });
+
+            modelBuilder.Entity("JWT_token_auth_Demo.Models.pro01product", b =>
+                {
+                    b.Navigation("pro02product_files");
                 });
 #pragma warning restore 612, 618
         }
