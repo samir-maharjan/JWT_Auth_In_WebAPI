@@ -92,47 +92,7 @@ namespace JWT_token_auth_Demo.Controllers
         [HttpGet]
         [Route("SeedDefaultData")]
 
-        public async Task<IActionResult> SeedDefaultData()
-        {
-            // Loop through each role name in the EnumApplicationUserType enumeration
-            foreach (var name in Enum.GetNames(typeof(EnumApplicationUserType)))
-            {
-                // Check if the role already exists, and if so, continue to the next iteration
-                if (await _roleManager.RoleExistsAsync(name.ToString())) { continue; }
-
-                // Create a new role using the RoleManager if it doesn't exist
-                await _roleManager.CreateAsync(new IdentityRole(name.ToString()));
-            }
-
-            // Check if a user with the email "superadmin@gmail.com" already exists
-            ApplicationUser SuperAdminUser = await _userManager.FindByEmailAsync("superadmin@gmail.com");
-
-            // If the user doesn't exist, create a new ApplicationUser (user entity)
-            if (SuperAdminUser == null)
-            {
-                ApplicationUser appUser = new ApplicationUser()
-                {
-                    UserName = "SuperAdmin",
-                    Email = "superadmin@gmail.com",
-                };
-
-                // Create the user with a password using the UserManager
-                IdentityResult res = await _userManager.CreateAsync(appUser, "Admin@123");
-
-                // If user creation fails, throw an exception with the error descriptions
-                if (!res.Succeeded)
-                {
-                    throw new Exception(string.Join(",", res.Errors.Select(x => x.Description).ToArray()));
-                }
-
-                // Add the user to the "SuperAdmin" and "SystemAdmin" roles
-                await _userManager.AddToRoleAsync(appUser, EnumApplicationUserType.SuperAdmin.ToString());
-                await _userManager.AddToRoleAsync(appUser, EnumApplicationUserType.SystemAdmin.ToString());
-            }
-
-            // Return an HTTP 200 OK response indicating successful data seeding
-            return Ok();
-        }
+ 
 
         private JwtSecurityToken GetToken(List<Claim> authClaims)
         {

@@ -13,7 +13,10 @@ namespace JWT_token_auth_Demo.ViewModels
 
     public class MenuSubCatVM
     {
-        public MenuCatVM CatDetails { get; set; }
+        public string SubCategoryCode { get; set; }
+        public string SubCategoryName { get; set; }
+        public bool Status { get; set; }
+        public bool Deleted { get; set; }
         public string CategoryId { get; set; }
     }
 }

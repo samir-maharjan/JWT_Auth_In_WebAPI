@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OnlineFormCore.Helpers;
 using System;
+using System.Collections;
 using System.Text.RegularExpressions;
+using static JWT_token_auth_Demo.Enum;
 
 namespace JWT_token_auth_Demo.Controllers
 {
@@ -47,6 +50,7 @@ namespace JWT_token_auth_Demo.Controllers
                     product.pro01bathroom_count = productVM.BathRoomCount;
                     product.pro01area = productVM.Area;
                     product.pro01status = productVM.Status;
+                    product.pro01property_stats = (EnumPropertyStatus)productVM.PropertyStatus;
                     product.pro01deleted = productVM.Deleted;
                     product.pro01created_name = "Admin";
                     product.pro01updated_name = "Admin";
@@ -134,6 +138,8 @@ namespace JWT_token_auth_Demo.Controllers
                         VideoLink = item.pro01video_link,
                         Description = item.pro01description,
                         Details = item.pro01details,
+                        PropertyStatus = (int)item.pro01property_stats,
+                        PropertyStatusValue =item.pro01property_stats.ToString(),
                         RoomCount = item.pro01room_count,
                         BathRoomCount = item.pro01bathroom_count,
                         Area = item.pro01area,
@@ -168,6 +174,15 @@ namespace JWT_token_auth_Demo.Controllers
 
         }
 
+
+
+        [HttpGet("PropertyStatusList")]
+        public async Task<IEnumerable> PropertyStatusList()
+        {
+            return EnumHelper.GetEnumList<EnumPropertyStatus>().ToList();
+        }
+
+
         [HttpGet("UpdateProduct")]
         public async Task<ProductResponseVM> UpdateProduct(string id)
         {
@@ -192,6 +207,8 @@ namespace JWT_token_auth_Demo.Controllers
                     VideoLink = product.pro01video_link,
                     Description = product.pro01description,
                     Details = product.pro01details,
+                    PropertyStatus = (int?)(EnumPropertyStatus)product.pro01property_stats,
+                    PropertyStatusValue = product.pro01property_stats.ToString(),
                     RoomCount = product.pro01room_count,
                     BathRoomCount = product.pro01bathroom_count,
                     Area = product.pro01area,
@@ -244,6 +261,7 @@ namespace JWT_token_auth_Demo.Controllers
                 proDetails.pro01map_link = res.MapLink;
                 proDetails.pro01video_link = res.VideoLink;
                 proDetails.pro01address = res.Address;
+                proDetails.pro01property_stats = (EnumPropertyStatus)res.PropertyStatus;
                 proDetails.pro01description = res.Description;
                 proDetails.pro01details = res.Details;
                 proDetails.pro01room_count = res.RoomCount;

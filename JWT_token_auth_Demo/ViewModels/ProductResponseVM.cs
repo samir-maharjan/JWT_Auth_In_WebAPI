@@ -19,6 +19,8 @@ namespace JWT_token_auth_Demo.ViewModels
         public string VideoLink { get; set; }
         public string Description { get; set; }
         public string Details { get; set; }
+        public string? PropertyStatusValue { get; set; }
+        public int? PropertyStatus { get; set; }
         public int RoomCount { get; set; }
         public int BathRoomCount { get; set; }
         public double Area { get; set; }

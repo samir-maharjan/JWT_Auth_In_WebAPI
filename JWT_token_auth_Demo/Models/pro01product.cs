@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using static JWT_token_auth_Demo.Enum;
 
 namespace JWT_token_auth_Demo.Models
 {
@@ -19,6 +20,7 @@ namespace JWT_token_auth_Demo.Models
         public int pro01room_count { get; set; }
         public int pro01bathroom_count { get; set; }
         public double pro01area { get; set; }
+        public EnumPropertyStatus pro01property_stats { get; set; }
 
         public bool pro01status { get; set; }
         public bool pro01deleted { get; set; }

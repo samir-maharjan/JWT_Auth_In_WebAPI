@@ -34,10 +34,10 @@ namespace JWT_token_auth_Demo.Controllers
                     cat02menu_sub_category category = new cat02menu_sub_category();
                     category.cat02uin = Guid.NewGuid().ToString();
                     category.cat02cat01uin = menuCatVM.CategoryId;
-                    category.cat02sub_category_code = menuCatVM.CatDetails.CategoryCode;
-                    category.cat02sub_category_title = menuCatVM.CatDetails.CategoryName;
-                    category.cat02status = menuCatVM.CatDetails.Status;
-                    category.cat02deleted = menuCatVM.CatDetails.Deleted;
+                    category.cat02sub_category_code = menuCatVM.SubCategoryCode;
+                    category.cat02sub_category_title = menuCatVM.SubCategoryCode;
+                    category.cat02status = menuCatVM.Status;
+                    category.cat02deleted = menuCatVM.Deleted;
                     category.cat02created_name = "Admin";
                     category.cat02updated_name = "Admin";
                     category.cat02created_date = DateTime.Now;
