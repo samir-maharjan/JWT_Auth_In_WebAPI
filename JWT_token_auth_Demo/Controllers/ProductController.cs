@@ -22,9 +22,11 @@ namespace JWT_token_auth_Demo.Controllers
     {
 
         private readonly AppDbContext _dbcontext;
-        public ProductController(AppDbContext appDbContext)
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        public ProductController(AppDbContext appDbContext, IWebHostEnvironment hostingEnvironment)
         {
             _dbcontext = appDbContext;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpPost("CreateProduct")]
@@ -52,6 +54,13 @@ namespace JWT_token_auth_Demo.Controllers
                     product.pro01status = productVM.Status;
                     product.pro01property_stats = (EnumPropertyStatus)productVM.PropertyStatus;
                     product.pro01deleted = productVM.Deleted;
+
+                    if (productVM.ThumbnailImg != null)
+                    {
+                        string uploadedPath = UploadFile("ProductThumbnail", productVM.ThumbnailImg);
+                        product.pro01thumbnail_img_path = uploadedPath;
+                    }
+
                     product.pro01created_name = "Admin";
                     product.pro01updated_name = "Admin";
                     product.pro01created_date = DateTime.Now;
@@ -62,36 +71,13 @@ namespace JWT_token_auth_Demo.Controllers
                     {
                         foreach (var imgFile in productVM.ProductFiles.ImgFile)
                         {
-                            string[] allowedExtensions = { ".jpg", ".jpeg", ".png" };
-                            string fileExtension = Path.GetExtension(imgFile!.FileName);
 
-                            if (Array.IndexOf(allowedExtensions, fileExtension.ToLower()) == -1)
-                            {
-                                return BadRequest("Invalid file! Only JPG, JPEG, and PNG files are allowed.");
-                            }
-
-                            string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(imgFile!.FileName)}";
-                            string yearMonthFolder = DateTime.Now.ToString("yyyy/MM");
-                            string uploadsFolder = Path.Combine("ProductImages", yearMonthFolder);
-                            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                            if (!Directory.Exists(uploadsFolder))
-                            {
-                                Directory.CreateDirectory(uploadsFolder);
-                            }
-
-                            using (var stream = new FileStream(filePath, FileMode.Create))
-                            {
-                                await imgFile!.CopyToAsync(stream);
-                            }
-
-                            // Store file information
-                            var uploadedImage = ($"~/ProductImages/{yearMonthFolder}/{uniqueFileName}");
+                            string uploadedPath = UploadFile("ProductImages", imgFile);
 
                             pro02product_files _img = new pro02product_files();
                             _img.pro02uin = Guid.NewGuid().ToString();
                             _img.pro02pro01uin = product.pro01uin;
-                            _img.pro02img_path = uploadedImage;
+                            _img.pro02img_path = uploadedPath;
                             _img.pro02img_name = imgFile!.FileName;
                             _img.pro02status = true;
                             _img.pro02deleted = false;
@@ -136,10 +122,11 @@ namespace JWT_token_auth_Demo.Controllers
                         Address = item.pro01address,
                         MapLink = item.pro01map_link,
                         VideoLink = item.pro01video_link,
+                        ThumbnailImgPath = item.pro01thumbnail_img_path == null ? "" : item.pro01thumbnail_img_path,
                         Description = item.pro01description,
                         Details = item.pro01details,
                         PropertyStatus = (int)item.pro01property_stats,
-                        PropertyStatusValue =item.pro01property_stats.ToString(),
+                        PropertyStatusValue = item.pro01property_stats.ToString(),
                         RoomCount = item.pro01room_count,
                         BathRoomCount = item.pro01bathroom_count,
                         Area = item.pro01area,
@@ -205,6 +192,8 @@ namespace JWT_token_auth_Demo.Controllers
                     Address = product.pro01address,
                     MapLink = product.pro01map_link,
                     VideoLink = product.pro01video_link,
+                    NewThumbnailImg = null,
+                    ThumbnailImgPath = product.pro01thumbnail_img_path == null ? "" : product.pro01thumbnail_img_path,
                     Description = product.pro01description,
                     Details = product.pro01details,
                     PropertyStatus = (int?)(EnumPropertyStatus)product.pro01property_stats,
@@ -241,7 +230,7 @@ namespace JWT_token_auth_Demo.Controllers
 
 
         [HttpPost("UpdateProductDes")]
-        public async Task<ActionResult<AfterSavedResponseVM>> UpdateProductDes(ProductResponseVM res)
+        public async Task<ActionResult<AfterSavedResponseVM>> UpdateProductDes([FromForm]ProductResponseVM res)
         {
             try
             {
@@ -270,6 +259,21 @@ namespace JWT_token_auth_Demo.Controllers
                 proDetails.pro01updated_date = DateTime.Now;
                 proDetails.pro01updated_name = "admin";
 
+                if (res.NewThumbnailImg !=null)
+                {
+                    if (proDetails.pro01thumbnail_img_path!=null)
+                    {
+                        DeleteThumbnailImg(proDetails.pro01thumbnail_img_path);
+                    }
+                    string newFilePath = UploadFile("ProductThumbnail",res.NewThumbnailImg);
+                    proDetails.pro01thumbnail_img_path = newFilePath;
+
+                }
+                else
+                {
+                    proDetails.pro01thumbnail_img_path = res.ThumbnailImgPath == null ? "" : res.ThumbnailImgPath;
+
+                }
                 _dbcontext.pro01product.Update(proDetails);
                 _dbcontext.SaveChanges();
             }
@@ -280,5 +284,81 @@ namespace JWT_token_auth_Demo.Controllers
             }
             return new AfterSavedResponseVM { status = true };
         }
+
+
+        private string UploadFile(string folderName, IFormFile file)
+        {
+            try
+            {
+                string[] allowedExtensions = { ".jpg", ".jpeg", ".png" };
+                string fileExtension = Path.GetExtension(file!.FileName);
+
+                if (Array.IndexOf(allowedExtensions, fileExtension.ToLower()) == -1)
+                {
+                    throw new Exception("Invalid file! Only JPG, JPEG, and PNG files are allowed.");
+                }
+
+                string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(file!.FileName)}";
+                string yearMonthFolder = DateTime.Now.ToString("yyyy/MM");
+                string uploadsFolder = Path.Combine(folderName, yearMonthFolder);
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    file!.CopyToAsync(stream);
+                }
+
+                // Store file information
+                var uploadedImage = ($"~/{folderName}/{yearMonthFolder}/{uniqueFileName}");
+                return uploadedImage;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error:", ex);
+            }
+        }
+
+        private IActionResult DeleteThumbnailImg(string relativePath)
+        {
+            try
+            {
+                var absolutePath = Path.Combine(relativePath.TrimStart('~').TrimStart('/'));
+                if (System.IO.File.Exists(absolutePath))
+                {
+                    System.IO.File.Delete(absolutePath); // delete file from the file path
+                    return Ok("File deleted successfully.");
+                }
+                return NotFound("File not found.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }
+
+
+/*[HttpDelete("delete/{fileName}")]
+public IActionResult DeleteFile(string fileName)
+{
+    try
+    {
+        var filePath = Path.Combine(_uploadDirectory, fileName);
+        if (System.IO.File.Exists(filePath))
+        {
+            System.IO.File.Delete(filePath); //delete file from the file path
+            return Ok("File deleted successfully.");
+        }
+        return NotFound("File not found.");
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, $"Internal server error: {ex.Message}");
+    }
+}*/

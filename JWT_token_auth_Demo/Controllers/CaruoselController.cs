@@ -30,19 +30,19 @@ namespace JWT_token_auth_Demo.Controllers
         {
             try
             {
-                if (caruoselVM.ImgFile != null)
+                if (caruoselVM.caruoselDetailsVM != null && caruoselVM.caruoselDetailsVM.Count > 0)
                 {
-                    foreach (var imgFile in caruoselVM.ImgFile)
+                    foreach (var imgFile in caruoselVM.caruoselDetailsVM)
                     {
                         string[] allowedExtensions = { ".jpg", ".jpeg", ".png" };
-                        string fileExtension = Path.GetExtension(imgFile!.FileName);
+                        string fileExtension = Path.GetExtension(imgFile!.ImgFile.FileName);
 
                         if (Array.IndexOf(allowedExtensions, fileExtension.ToLower()) == -1)
                         {
                             return BadRequest("Invalid file! Only JPG, JPEG, and PNG files are allowed.");
                         }
 
-                        string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(imgFile!.FileName)}";
+                        string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(imgFile!.ImgFile.FileName)}";
                         string yearMonthFolder = DateTime.Now.ToString("yyyy/MM");
                         string uploadsFolder = Path.Combine("CaruoselImages", yearMonthFolder);
                         string filePath = Path.Combine(uploadsFolder, uniqueFileName);
@@ -54,7 +54,7 @@ namespace JWT_token_auth_Demo.Controllers
 
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
-                            await imgFile!.CopyToAsync(stream);
+                            await imgFile!.ImgFile.CopyToAsync(stream);
                         }
 
                         // Store file information
@@ -62,8 +62,11 @@ namespace JWT_token_auth_Demo.Controllers
 
                         car01caruosel _img = new car01caruosel();
                         _img.car01uin = Guid.NewGuid().ToString();
+                        _img.car01title = imgFile.CaruoselTitle !=null? imgFile.CaruoselTitle:"";
+                        _img.car01description = imgFile.CaruoselDescription != null ? imgFile.CaruoselDescription : "";
+                        _img.car01link = imgFile.CaruoselLink != null ? imgFile.CaruoselLink : "";
                         _img.car01img_path = uploadedImage;
-                        _img.car01img_name = imgFile!.FileName;
+                        _img.car01img_name = imgFile!.ImgFile.FileName;
                         _img.car01status = true;
                         _img.car01deleted = false;
                         _img.car01created_date = DateTime.Now;
@@ -98,6 +101,9 @@ namespace JWT_token_auth_Demo.Controllers
                     CaruoselResponseVM res1 = new CaruoselResponseVM()
                     {
                         ID = item.car01uin,
+                        CaruoselDescription = item.car01description,
+                        CaruoselTitle = item.car01title,
+                        CaruoselLink = item.car01link,
                         ImagePath = item.car01img_path,
                         ImageName = item.car01img_name,
                         Status = item.car01status,
@@ -131,6 +137,9 @@ namespace JWT_token_auth_Demo.Controllers
                 {
                     ID = imgDetails.car01uin,
                     ImagePath = imgDetails.car01img_path,
+                    CaruoselDescription = imgDetails.car01description,
+                    CaruoselTitle = imgDetails.car01title,
+                    CaruoselLink = imgDetails.car01link,
                     ImageName = imgDetails.car01img_name,
                     Status = imgDetails.car01status,
                     Deleted = imgDetails.car01deleted
@@ -155,6 +164,9 @@ namespace JWT_token_auth_Demo.Controllers
                     throw new Exception("Error:Data Not Found!");
 
                 }
+                imgDetails.car01title = res.CaruoselTitle;
+                imgDetails.car01description = res.CaruoselDescription;
+                imgDetails.car01link = res.CaruoselLink;
                 imgDetails.car01status = res.Status;
                 imgDetails.car01deleted = res.Deleted;
                 imgDetails.car01updated_date = DateTime.Now;

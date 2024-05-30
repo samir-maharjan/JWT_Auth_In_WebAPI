@@ -35,7 +35,7 @@ namespace JWT_token_auth_Demo.Controllers
                     category.cat02uin = Guid.NewGuid().ToString();
                     category.cat02cat01uin = menuCatVM.CategoryId;
                     category.cat02sub_category_code = menuCatVM.SubCategoryCode;
-                    category.cat02sub_category_title = menuCatVM.SubCategoryCode;
+                    category.cat02sub_category_title = menuCatVM.SubCategoryName;
                     category.cat02status = menuCatVM.Status;
                     category.cat02deleted = menuCatVM.Deleted;
                     category.cat02created_name = "Admin";
@@ -87,6 +87,38 @@ namespace JWT_token_auth_Demo.Controllers
             }
 
            
+        }
+
+        [HttpGet("SubCategoryListWithCategoryID")]
+        public async Task<IEnumerable<SubCategoryResponseVM>> SubCategoryListWithCategoryID(string id)
+        {
+            try
+            {
+                List<cat02menu_sub_category> res = await _dbcontext.cat02menu_sub_category.Where(x => x.cat02cat01uin==id && !x.cat02deleted).Include(x => x.cat01menu_category).ToListAsync();
+                IList<SubCategoryResponseVM> resList = new List<SubCategoryResponseVM>();
+                foreach (var item in res)
+                {
+                    SubCategoryResponseVM res1 = new SubCategoryResponseVM()
+                    {
+                        ID = item.cat02uin,
+                        CategoryID = item.cat02cat01uin,
+                        CategoryTitle = item.cat01menu_category.cat01category_title,
+                        SubCategoryTitle = item.cat02sub_category_title,
+                        SubCategoryCode = item.cat02sub_category_code,
+                        Status = item.cat02status,
+                        Deleted = item.cat02deleted
+                    };
+                    resList.Add(res1);
+                }
+
+                return resList;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error:", ex);
+            }
+
+
         }
 
         [HttpGet("UpdateSubMenuCategory")]

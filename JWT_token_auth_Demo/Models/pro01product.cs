@@ -17,6 +17,7 @@ namespace JWT_token_auth_Demo.Models
         public string pro01video_link { get; set; }
         public string pro01description { get; set; }
         public string pro01details { get; set; }
+        public string? pro01thumbnail_img_path { get; set; }
         public int pro01room_count { get; set; }
         public int pro01bathroom_count { get; set; }
         public double pro01area { get; set; }

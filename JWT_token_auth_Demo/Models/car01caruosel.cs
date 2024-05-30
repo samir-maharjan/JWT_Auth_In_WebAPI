@@ -8,6 +8,9 @@ namespace JWT_token_auth_Demo.Models
         public string car01uin { get; set; }
         public string car01img_path { get; set; }
         public string car01img_name { get; set; }
+        public string car01title { get; set; }
+        public string car01description { get; set; }
+        public string car01link { get; set; }
         public bool car01status { get; set; }
         public bool car01deleted { get; set; }
         public string car01created_name { get; set; }

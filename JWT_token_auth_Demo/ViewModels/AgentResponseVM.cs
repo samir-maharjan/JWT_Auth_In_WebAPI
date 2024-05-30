@@ -29,6 +29,7 @@ namespace JWT_token_auth_Demo.ViewModels
 
     public class AgentImgFiles
     {
+        public string ID { get; set; }
         public string Name { get; set; }
         public string FilePath { get; set; }
         public DateTime UploadedDate { get; set; }

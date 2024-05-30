@@ -4,6 +4,7 @@ using JWT_token_auth_Demo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JWTtokenauthDemo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240530060451_AddedLinkFieldInCaruoselTable")]
+    partial class AddedLinkFieldInCaruoselTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -442,9 +445,6 @@ namespace JWTtokenauthDemo.Migrations
 
                     b.Property<bool>("pro01status")
                         .HasColumnType("bit");
-
-                    b.Property<string>("pro01thumbnail_img_path")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("pro01updated_date")
                         .HasColumnType("datetime2");

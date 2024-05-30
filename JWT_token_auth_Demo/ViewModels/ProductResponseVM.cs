@@ -16,6 +16,8 @@ namespace JWT_token_auth_Demo.ViewModels
         public double Price { get; set; }
         public string Address { get; set; }
         public string MapLink { get; set; }
+        public string ThumbnailImgPath { get; set; }
+        public IFormFile? NewThumbnailImg { get; set; }
         public string VideoLink { get; set; }
         public string Description { get; set; }
         public string Details { get; set; }

@@ -17,6 +17,7 @@ namespace JWT_token_auth_Demo.ViewModels
         public int RoomCount { get; set; }
         public int BathRoomCount { get; set; }
         public int PropertyStatus { get; set; }
+        public IFormFile? ThumbnailImg { get; set; }
         public double Area { get; set; }
         public bool Status { get; set; }
         public bool Deleted { get; set; }

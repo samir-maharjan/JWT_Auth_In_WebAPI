@@ -33,7 +33,7 @@ namespace JWT_token_auth_Demo.Controllers
                 {
                     agent01profile agent = new agent01profile();
                     agent.agent01uin = Guid.NewGuid().ToString();
-                    agent.agent01description=agentVM.Description;
+                    agent.agent01description = agentVM.Description;
                     agent.agent01name = agentVM.AgentName;
                     agent.agent01code = agentVM.AgentCode;
                     agent.agent01designation = agentVM.Designation;
@@ -46,7 +46,7 @@ namespace JWT_token_auth_Demo.Controllers
                     agent.agent01website_link = agentVM.WebsiteLink;
                     agent.agent01linked_in_profile = agentVM.LinkedInLink;
                     agent.agent01status = agentVM.Status;
-                    agent.agent01deleted = agentVM.Deleted;
+                    agent.agent01deleted = false;
                     agent.agent01created_name = "Admin";
                     agent.agent01updated_name = "Admin";
                     agent.agent01created_date = DateTime.Now;
@@ -55,17 +55,17 @@ namespace JWT_token_auth_Demo.Controllers
 
                     if (agentVM.AgentFile != null)
                     {
-                        foreach (var imgFile in agentVM.AgentFile.ImgFile)
+                        foreach (var imgFile in agentVM.AgentFile)
                         {
                             string[] allowedExtensions = { ".jpg", ".jpeg", ".png" };
-                            string fileExtension = Path.GetExtension(imgFile!.FileName);
+                            string fileExtension = Path.GetExtension(imgFile!.ImgFile.FileName);
 
                             if (Array.IndexOf(allowedExtensions, fileExtension.ToLower()) == -1)
                             {
                                 return BadRequest("Invalid file! Only JPG, JPEG, and PNG files are allowed.");
                             }
 
-                            string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(imgFile!.FileName)}";
+                            string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(imgFile!.ImgFile.FileName)}";
                             string yearMonthFolder = DateTime.Now.ToString("yyyy/MM");
                             string uploadsFolder = Path.Combine("AgentProfileImages", yearMonthFolder);
                             string filePath = Path.Combine(uploadsFolder, uniqueFileName);
@@ -77,7 +77,7 @@ namespace JWT_token_auth_Demo.Controllers
 
                             using (var stream = new FileStream(filePath, FileMode.Create))
                             {
-                                await imgFile!.CopyToAsync(stream);
+                                await imgFile!.ImgFile.CopyToAsync(stream);
                             }
 
                             // Store file information
@@ -87,7 +87,7 @@ namespace JWT_token_auth_Demo.Controllers
                             _img.agent02uin = Guid.NewGuid().ToString();
                             _img.agent02agent01uin = agent.agent01uin;
                             _img.agent02img_path = uploadedImage;
-                            _img.agent02img_name = imgFile!.FileName;
+                            _img.agent02img_name = imgFile!.ImgFile.FileName;
                             _img.agent02status = true;
                             _img.agent02deleted = false;
                             _img.agent02created_date = DateTime.Now;
@@ -138,7 +138,7 @@ namespace JWT_token_auth_Demo.Controllers
                         Status = item.agent01status,
                         Deleted = item.agent01deleted
                     };
-                    List<agent02profile_img> images = _dbcontext.agent02profile_img.Where(x => x.agent02agent01uin == item.agent01uin).ToList();
+                    List<agent02profile_img> images = _dbcontext.agent02profile_img.Where(x => x.agent02agent01uin == item.agent01uin && x.agent02status).ToList();
 
                     if (images.Count != 0)
                     {
@@ -146,6 +146,7 @@ namespace JWT_token_auth_Demo.Controllers
                         {
                             AgentImgFiles img = new AgentImgFiles()
                             {
+                                ID = image.agent02uin,
                                 Name = image.agent02img_name,
                                 FilePath = image.agent02img_path,
                                 UploadedDate = image.agent02updated_date
@@ -196,7 +197,7 @@ namespace JWT_token_auth_Demo.Controllers
                     Deleted = agent.agent01deleted
                 };
 
-                List<agent02profile_img> images = _dbcontext.agent02profile_img.Where(x => x.agent02agent01uin == agent.agent01uin).ToList();
+                List<agent02profile_img> images = _dbcontext.agent02profile_img.Where(x => x.agent02agent01uin == agent.agent01uin && x.agent02status && !x.agent02deleted).ToList();
 
                 if (images.Count != 0)
                 {
@@ -204,6 +205,7 @@ namespace JWT_token_auth_Demo.Controllers
                     {
                         AgentImgFiles img = new AgentImgFiles()
                         {
+                            ID = image.agent02uin,
                             Name = image.agent02img_name,
                             FilePath = image.agent02img_path,
                             UploadedDate = image.agent02updated_date
@@ -221,7 +223,7 @@ namespace JWT_token_auth_Demo.Controllers
 
 
         [HttpPost("UpdateProductDes")]
-        public async Task<ActionResult<AfterSavedResponseVM>> UpdateProductDes(AgentResponseVM res)
+        public async Task<ActionResult<AfterSavedResponseVM>> UpdateProductDes([FromForm] AgentVM res)
         {
             try
             {
@@ -249,6 +251,71 @@ namespace JWT_token_auth_Demo.Controllers
                 agentDetails.agent01updated_name = "admin";
 
                 _dbcontext.agent01profile.Update(agentDetails);
+
+                if (res.AgentFile != null)
+                {
+
+                    foreach (var imgFile in res.AgentFile)
+                    {
+                        if (imgFile.AgentImgID == null)
+                        {
+                            //At first change status to false of all img file of agent then only add new one with true status and display it as a profile image 
+
+                            List<agent02profile_img> files = _dbcontext.agent02profile_img.Where(x => x.agent02agent01uin == res.ID && x.agent02status).ToList();
+                            foreach (var old_file in files)
+                                if (old_file != null)
+                                {
+                                    old_file.agent02status = false;
+                                    old_file.agent02deleted = true;
+
+                                    _dbcontext.agent02profile_img.Update(old_file);
+
+                                }
+
+                            string[] allowedExtensions = { ".jpg", ".jpeg", ".png" };
+                            string fileExtension = Path.GetExtension(imgFile!.ImgFile.FileName);
+
+                            if (Array.IndexOf(allowedExtensions, fileExtension.ToLower()) == -1)
+                            {
+                                return BadRequest("Invalid file! Only JPG, JPEG, and PNG files are allowed.");
+                            }
+
+                            string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(imgFile!.ImgFile.FileName)}";
+                            string yearMonthFolder = DateTime.Now.ToString("yyyy/MM");
+                            string uploadsFolder = Path.Combine("AgentProfileImages", yearMonthFolder);
+                            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                            if (!Directory.Exists(uploadsFolder))
+                            {
+                                Directory.CreateDirectory(uploadsFolder);
+                            }
+
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await imgFile!.ImgFile.CopyToAsync(stream);
+                            }
+
+                            // Store file information
+                            var uploadedImage = ($"~/AgentProfileImages/{yearMonthFolder}/{uniqueFileName}");
+
+                            agent02profile_img _img = new agent02profile_img();
+                            _img.agent02uin = Guid.NewGuid().ToString();
+                            _img.agent02agent01uin = res.ID;
+                            _img.agent02img_path = uploadedImage;
+                            _img.agent02img_name = imgFile!.ImgFile.FileName;
+                            _img.agent02status = true;
+                            _img.agent02deleted = false;
+                            _img.agent02created_date = DateTime.Now;
+                            _img.agent02updated_date = DateTime.Now;
+                            _img.agent02created_name = "admin";
+                            _img.agent02updated_name = "admin";
+
+                            _dbcontext.agent02profile_img.Add(_img);
+                           
+                        }
+                    }
+                }
+
                 _dbcontext.SaveChanges();
             }
             catch (Exception ex)
