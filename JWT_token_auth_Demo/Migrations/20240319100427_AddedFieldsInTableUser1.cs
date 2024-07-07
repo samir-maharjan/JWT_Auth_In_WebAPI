@@ -12,7 +12,7 @@ namespace JWTtokenauthDemo.Migrations
         {
             migrationBuilder.RenameColumn(
                 name: "cusr01updated_name",
-                table: "usr01users",
+                table: "dbo.usr01users",
                 newName: "usr01updated_name");
         }
 
@@ -21,7 +21,7 @@ namespace JWTtokenauthDemo.Migrations
         {
             migrationBuilder.RenameColumn(
                 name: "usr01updated_name",
-                table: "usr01users",
+                table: "dbo.usr01users",
                 newName: "cusr01updated_name");
         }
     }

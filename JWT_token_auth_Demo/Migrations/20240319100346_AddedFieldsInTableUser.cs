@@ -13,28 +13,28 @@ namespace JWTtokenauthDemo.Migrations
         {
             migrationBuilder.AddColumn<string>(
                 name: "cusr01updated_name",
-                table: "usr01users",
+                table: "dbo.usr01users",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "usr01created_date",
-                table: "usr01users",
+                table: "dbo.usr01users",
                 type: "datetime2",
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
                 name: "usr01created_name",
-                table: "usr01users",
+                table: "dbo.usr01users",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "usr01updated_date",
-                table: "usr01users",
+                table: "dbo.usr01users",
                 type: "datetime2",
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
@@ -45,19 +45,19 @@ namespace JWTtokenauthDemo.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "cusr01updated_name",
-                table: "usr01users");
+                table: "dbo.usr01users");
 
             migrationBuilder.DropColumn(
                 name: "usr01created_date",
-                table: "usr01users");
+                table: "dbo.usr01users");
 
             migrationBuilder.DropColumn(
                 name: "usr01created_name",
-                table: "usr01users");
+                table: "dbo.usr01users");
 
             migrationBuilder.DropColumn(
                 name: "usr01updated_date",
-                table: "usr01users");
+                table: "dbo.usr01users");
         }
     }
 }

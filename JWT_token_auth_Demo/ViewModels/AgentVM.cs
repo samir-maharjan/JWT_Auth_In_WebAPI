@@ -4,7 +4,7 @@ namespace JWT_token_auth_Demo.ViewModels
 {
     public class AgentVM
     {
-        public string ID { get; set; }
+        public string? ID { get; set; }
         public string AgentCode { get; set; }
         public string AgentName { get; set; }
         public string Designation { get; set; }
@@ -19,14 +19,8 @@ namespace JWT_token_auth_Demo.ViewModels
         public string LinkedInLink { get; set; }
         public bool Status { get; set; }
         public bool Deleted { get; set; }
-        public List<AgentFileVM>? AgentFile { get; set; }
-
-    }
-
-    public class AgentFileVM
-    {
-        public string? AgentImgID { get; set; }
         public IFormFile? ImgFile { get; set; }
 
     }
+
 }

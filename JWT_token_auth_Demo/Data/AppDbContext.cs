@@ -21,7 +21,7 @@ namespace JWT_token_auth_Demo.Data
         public DbSet<pro01product> pro01product { get; set; }
         public DbSet<pro02product_files> pro02product_files { get; set; }
         public DbSet<agent01profile> agent01profile { get; set; }
-        public DbSet<agent02profile_img> agent02profile_img { get; set; }
+        public DbSet<lead01lead_info> lead01lead_info { get; set; }
 
 
 
@@ -39,10 +39,6 @@ namespace JWT_token_auth_Demo.Data
                .WithOne(b => b.pro01product)
                .HasForeignKey(b => b.pro02pro01uin); // in product relation with category and sub category left
 
-            builder.Entity<agent01profile>()
-               .HasMany(a => a.agent02profile_img)
-               .WithOne(b => b.agent01profile)
-               .HasForeignKey(b => b.agent02agent01uin);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace JWTtokenauthDemo.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "cat02menu_sub_category",
+                name: "dbo.cat02menu_sub_category",
                 columns: table => new
                 {
                     cat02uin = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -32,14 +32,14 @@ namespace JWTtokenauthDemo.Migrations
                     table.ForeignKey(
                         name: "FK_cat02menu_sub_category_cat01menu_category_cat02cat01uin",
                         column: x => x.cat02cat01uin,
-                        principalTable: "cat01menu_category",
+                        principalTable: "dbo.cat01menu_category",
                         principalColumn: "cat01uin",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_cat02menu_sub_category_cat02cat01uin",
-                table: "cat02menu_sub_category",
+                table: "dbo.cat02menu_sub_category",
                 column: "cat02cat01uin");
         }
 
@@ -47,7 +47,7 @@ namespace JWTtokenauthDemo.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "cat02menu_sub_category");
+                name: "dbo.cat02menu_sub_category");
         }
     }
 }

@@ -12,7 +12,7 @@ namespace JWTtokenauthDemo.Migrations
         {
             migrationBuilder.AddColumn<string>(
                 name: "car01link",
-                table: "car01caruosel",
+                table: "dbo.car01caruosel",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
@@ -23,7 +23,7 @@ namespace JWTtokenauthDemo.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "car01link",
-                table: "car01caruosel");
+                table: "dbo.car01caruosel");
         }
     }
 }

@@ -12,7 +12,7 @@ namespace JWTtokenauthDemo.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "agent01profile",
+                name: "dbo.agent01profile",
                 columns: table => new
                 {
                     agent01uin = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -45,7 +45,7 @@ namespace JWTtokenauthDemo.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "agent01profile");
+                name: "dbo.agent01profile");
         }
     }
 }

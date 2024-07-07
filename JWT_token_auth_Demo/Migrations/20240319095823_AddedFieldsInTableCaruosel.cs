@@ -13,14 +13,14 @@ namespace JWTtokenauthDemo.Migrations
         {
             migrationBuilder.AddColumn<DateTime>(
                 name: "car01updated_date",
-                table: "car01caruosel",
+                table: "dbo.car01caruosel",
                 type: "datetime2",
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
                 name: "car01updated_name",
-                table: "car01caruosel",
+                table: "dbo.car01caruosel",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
@@ -31,11 +31,11 @@ namespace JWTtokenauthDemo.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "car01updated_date",
-                table: "car01caruosel");
+                table: "dbo.car01caruosel");
 
             migrationBuilder.DropColumn(
                 name: "car01updated_name",
-                table: "car01caruosel");
+                table: "dbo.car01caruosel");
         }
     }
 }

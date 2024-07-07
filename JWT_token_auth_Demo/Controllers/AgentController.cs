@@ -45,59 +45,20 @@ namespace JWT_token_auth_Demo.Controllers
                     agent.agent01fb_link = agentVM.FBLink;
                     agent.agent01website_link = agentVM.WebsiteLink;
                     agent.agent01linked_in_profile = agentVM.LinkedInLink;
-                    agent.agent01status = agentVM.Status;
+                    agent.agent01status = true;
                     agent.agent01deleted = false;
                     agent.agent01created_name = "Admin";
                     agent.agent01updated_name = "Admin";
                     agent.agent01created_date = DateTime.Now;
                     agent.agent01updated_date = DateTime.Now;
-                    _dbcontext.agent01profile.Add(agent);
-
-                    if (agentVM.AgentFile != null)
+                    
+                    if(agentVM.ImgFile != null)
                     {
-                        foreach (var imgFile in agentVM.AgentFile)
-                        {
-                            string[] allowedExtensions = { ".jpg", ".jpeg", ".png" };
-                            string fileExtension = Path.GetExtension(imgFile!.ImgFile.FileName);
 
-                            if (Array.IndexOf(allowedExtensions, fileExtension.ToLower()) == -1)
-                            {
-                                return BadRequest("Invalid file! Only JPG, JPEG, and PNG files are allowed.");
-                            }
-
-                            string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(imgFile!.ImgFile.FileName)}";
-                            string yearMonthFolder = DateTime.Now.ToString("yyyy/MM");
-                            string uploadsFolder = Path.Combine("AgentProfileImages", yearMonthFolder);
-                            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                            if (!Directory.Exists(uploadsFolder))
-                            {
-                                Directory.CreateDirectory(uploadsFolder);
-                            }
-
-                            using (var stream = new FileStream(filePath, FileMode.Create))
-                            {
-                                await imgFile!.ImgFile.CopyToAsync(stream);
-                            }
-
-                            // Store file information
-                            var uploadedImage = ($"~/AgentProfileImages/{yearMonthFolder}/{uniqueFileName}");
-
-                            agent02profile_img _img = new agent02profile_img();
-                            _img.agent02uin = Guid.NewGuid().ToString();
-                            _img.agent02agent01uin = agent.agent01uin;
-                            _img.agent02img_path = uploadedImage;
-                            _img.agent02img_name = imgFile!.ImgFile.FileName;
-                            _img.agent02status = true;
-                            _img.agent02deleted = false;
-                            _img.agent02created_date = DateTime.Now;
-                            _img.agent02updated_date = DateTime.Now;
-                            _img.agent02created_name = "admin";
-                            _img.agent02updated_name = "admin";
-
-                            _dbcontext.agent02profile_img.Add(_img);
-                        }
+                        string uploadedImage = await UploadFile("AgentProfileImages", agentVM.ImgFile);
+                        agent.agent01profile_img_path = uploadedImage;
                     }
+                    _dbcontext.agent01profile.Add(agent);
                     _dbcontext.SaveChanges();
                 }
 
@@ -136,24 +97,9 @@ namespace JWT_token_auth_Demo.Controllers
                         WebsiteLink = item.agent01website_link,
                         LinkedInLink = item.agent01fb_link,
                         Status = item.agent01status,
-                        Deleted = item.agent01deleted
+                        Deleted = item.agent01deleted,
+                        AgentImgPath = item.agent01profile_img_path
                     };
-                    List<agent02profile_img> images = _dbcontext.agent02profile_img.Where(x => x.agent02agent01uin == item.agent01uin && x.agent02status).ToList();
-
-                    if (images.Count != 0)
-                    {
-                        foreach (var image in images)
-                        {
-                            AgentImgFiles img = new AgentImgFiles()
-                            {
-                                ID = image.agent02uin,
-                                Name = image.agent02img_name,
-                                FilePath = image.agent02img_path,
-                                UploadedDate = image.agent02updated_date
-                            };
-                            res1.Images.Add(img);
-                        }
-                    }
                     resList.Add(res1);
                 }
 
@@ -194,25 +140,9 @@ namespace JWT_token_auth_Demo.Controllers
                     WebsiteLink = agent.agent01website_link,
                     LinkedInLink = agent.agent01fb_link,
                     Status = agent.agent01status,
-                    Deleted = agent.agent01deleted
+                    Deleted = agent.agent01deleted,
+                    AgentImgPath = agent.agent01profile_img_path ==null? "" : agent.agent01profile_img_path
                 };
-
-                List<agent02profile_img> images = _dbcontext.agent02profile_img.Where(x => x.agent02agent01uin == agent.agent01uin && x.agent02status && !x.agent02deleted).ToList();
-
-                if (images.Count != 0)
-                {
-                    foreach (var image in images)
-                    {
-                        AgentImgFiles img = new AgentImgFiles()
-                        {
-                            ID = image.agent02uin,
-                            Name = image.agent02img_name,
-                            FilePath = image.agent02img_path,
-                            UploadedDate = image.agent02updated_date
-                        };
-                        res1.Images.Add(img);
-                    }
-                }
                 return res1;
             }
             catch (Exception ex)
@@ -222,8 +152,8 @@ namespace JWT_token_auth_Demo.Controllers
         }
 
 
-        [HttpPost("UpdateProductDes")]
-        public async Task<ActionResult<AfterSavedResponseVM>> UpdateProductDes([FromForm] AgentVM res)
+        [HttpPost("UpdateAgents")]
+        public async Task<ActionResult<AfterSavedResponseVM>> UpdateAgents([FromForm] AgentVM res)
         {
             try
             {
@@ -250,71 +180,17 @@ namespace JWT_token_auth_Demo.Controllers
                 agentDetails.agent01updated_date = DateTime.Now;
                 agentDetails.agent01updated_name = "admin";
 
-                _dbcontext.agent01profile.Update(agentDetails);
-
-                if (res.AgentFile != null)
+                if (res.ImgFile != null)
                 {
-
-                    foreach (var imgFile in res.AgentFile)
+                    if (agentDetails.agent01profile_img_path != null)
                     {
-                        if (imgFile.AgentImgID == null)
-                        {
-                            //At first change status to false of all img file of agent then only add new one with true status and display it as a profile image 
-
-                            List<agent02profile_img> files = _dbcontext.agent02profile_img.Where(x => x.agent02agent01uin == res.ID && x.agent02status).ToList();
-                            foreach (var old_file in files)
-                                if (old_file != null)
-                                {
-                                    old_file.agent02status = false;
-                                    old_file.agent02deleted = true;
-
-                                    _dbcontext.agent02profile_img.Update(old_file);
-
-                                }
-
-                            string[] allowedExtensions = { ".jpg", ".jpeg", ".png" };
-                            string fileExtension = Path.GetExtension(imgFile!.ImgFile.FileName);
-
-                            if (Array.IndexOf(allowedExtensions, fileExtension.ToLower()) == -1)
-                            {
-                                return BadRequest("Invalid file! Only JPG, JPEG, and PNG files are allowed.");
-                            }
-
-                            string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(imgFile!.ImgFile.FileName)}";
-                            string yearMonthFolder = DateTime.Now.ToString("yyyy/MM");
-                            string uploadsFolder = Path.Combine("AgentProfileImages", yearMonthFolder);
-                            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                            if (!Directory.Exists(uploadsFolder))
-                            {
-                                Directory.CreateDirectory(uploadsFolder);
-                            }
-
-                            using (var stream = new FileStream(filePath, FileMode.Create))
-                            {
-                                await imgFile!.ImgFile.CopyToAsync(stream);
-                            }
-
-                            // Store file information
-                            var uploadedImage = ($"~/AgentProfileImages/{yearMonthFolder}/{uniqueFileName}");
-
-                            agent02profile_img _img = new agent02profile_img();
-                            _img.agent02uin = Guid.NewGuid().ToString();
-                            _img.agent02agent01uin = res.ID;
-                            _img.agent02img_path = uploadedImage;
-                            _img.agent02img_name = imgFile!.ImgFile.FileName;
-                            _img.agent02status = true;
-                            _img.agent02deleted = false;
-                            _img.agent02created_date = DateTime.Now;
-                            _img.agent02updated_date = DateTime.Now;
-                            _img.agent02created_name = "admin";
-                            _img.agent02updated_name = "admin";
-
-                            _dbcontext.agent02profile_img.Add(_img);
-                           
-                        }
+                        DeleteProfileImg(agentDetails.agent01profile_img_path);
                     }
+                    string newFilePath = await UploadFile("AgentProfileImages", res.ImgFile);
+                    agentDetails.agent01profile_img_path = newFilePath;
+
                 }
+                _dbcontext.agent01profile.Update(agentDetails);
 
                 _dbcontext.SaveChanges();
             }
@@ -324,6 +200,62 @@ namespace JWT_token_auth_Demo.Controllers
                 throw new Exception("Error:", ex);
             }
             return new AfterSavedResponseVM { status = true };
+        }
+
+
+        private async Task<string> UploadFile(string folderName, IFormFile file)
+        {
+            try
+            {
+                string[] allowedExtensions = { ".jpg", ".jpeg", ".png" };
+                string fileExtension = Path.GetExtension(file!.FileName);
+
+                if (Array.IndexOf(allowedExtensions, fileExtension.ToLower()) == -1)
+                {
+                    throw new InvalidOperationException("Invalid file! Only JPG, JPEG, and PNG files are allowed.");
+                }
+
+                string uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
+                string yearMonthFolder = DateTime.Now.ToString("yyyy/MM");
+                string uploadsFolder = Path.Combine(folderName, yearMonthFolder);
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                // Store file information
+                var uploadedImage = Path.Combine("~", folderName, yearMonthFolder, uniqueFileName).Replace("\\", "/");
+                return uploadedImage;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while uploading the file.", ex);
+            }
+        }
+
+        private IActionResult DeleteProfileImg(string relativePath)
+        {
+            try
+            {
+                var absolutePath = Path.Combine(relativePath.TrimStart('~').TrimStart('/'));
+                if (System.IO.File.Exists(absolutePath))
+                {
+                    System.IO.File.Delete(absolutePath); // delete file from the file path
+                    return Ok("File deleted successfully.");
+                }
+                return NotFound("File not found.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }

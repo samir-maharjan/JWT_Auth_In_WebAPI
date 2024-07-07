@@ -22,11 +22,9 @@ namespace JWT_token_auth_Demo.Controllers
     {
 
         private readonly AppDbContext _dbcontext;
-        private readonly IWebHostEnvironment _hostingEnvironment;
-        public ProductController(AppDbContext appDbContext, IWebHostEnvironment hostingEnvironment)
+        public ProductController(AppDbContext appDbContext)
         {
             _dbcontext = appDbContext;
-            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpPost("CreateProduct")]
@@ -50,14 +48,15 @@ namespace JWT_token_auth_Demo.Controllers
                     product.pro01details = productVM.Details;
                     product.pro01room_count = productVM.RoomCount;
                     product.pro01bathroom_count = productVM.BathRoomCount;
+                    product.pro01parking_count = productVM.ParkingCount;
                     product.pro01area = productVM.Area;
-                    product.pro01status = productVM.Status;
+                    product.pro01status = true;
                     product.pro01property_stats = (EnumPropertyStatus)productVM.PropertyStatus;
-                    product.pro01deleted = productVM.Deleted;
+                    product.pro01deleted = false;
 
                     if (productVM.ThumbnailImg != null)
                     {
-                        string uploadedPath = UploadFile("ProductThumbnail", productVM.ThumbnailImg);
+                        string uploadedPath = await UploadFile("ProductThumbnail", productVM.ThumbnailImg);
                         product.pro01thumbnail_img_path = uploadedPath;
                     }
 
@@ -72,7 +71,7 @@ namespace JWT_token_auth_Demo.Controllers
                         foreach (var imgFile in productVM.ProductFiles.ImgFile)
                         {
 
-                            string uploadedPath = UploadFile("ProductImages", imgFile);
+                            string uploadedPath = await UploadFile("ProductImages", imgFile);
 
                             pro02product_files _img = new pro02product_files();
                             _img.pro02uin = Guid.NewGuid().ToString();
@@ -129,11 +128,12 @@ namespace JWT_token_auth_Demo.Controllers
                         PropertyStatusValue = item.pro01property_stats.ToString(),
                         RoomCount = item.pro01room_count,
                         BathRoomCount = item.pro01bathroom_count,
+                        ParkingCount = item.pro01parking_count,
                         Area = item.pro01area,
                         Status = item.pro01status,
                         Deleted = item.pro01deleted
                     };
-                    List<pro02product_files> images = _dbcontext.pro02product_files.Where(x => x.pro02pro01uin == item.pro01uin).ToList();
+                    List<pro02product_files> images = _dbcontext.pro02product_files.Where(x => x.pro02pro01uin == item.pro01uin && !x.pro02deleted && x.pro02status).ToList();
 
                     if (images.Count != 0)
                     {
@@ -141,6 +141,7 @@ namespace JWT_token_auth_Demo.Controllers
                         {
                             ProductFiles img = new ProductFiles()
                             {
+                                ImageId = image.pro02uin,
                                 Name = image.pro02img_name,
                                 FilePath = image.pro02img_path,
                                 UploadedDate = image.pro02updated_date
@@ -157,12 +158,94 @@ namespace JWT_token_auth_Demo.Controllers
             {
                 throw new Exception("Error:", ex);
             }
+        }
 
+
+        [HttpGet("ProductListWithCategoryID")]
+        public async Task<IEnumerable<ProductResponseVM>> ProductListWithCategoryID(string id)
+        {
+            try
+            {
+                List<pro01product> res = await _dbcontext.pro01product.Where(x => x.pro01cat01uin == id && !x.pro01deleted).Include(x => x.pro02product_files).ToListAsync();
+                IList<ProductResponseVM> resList = ReturnProductList(res);
+                return resList;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error:", ex);
+            }
 
         }
 
 
+        [HttpGet("ProductListWithSubCategoryID")]
+        public async Task<IEnumerable<ProductResponseVM>> ProductListWithSubCategoryID(string id)
+        {
+            try
+            {
+                List<pro01product> res = await _dbcontext.pro01product.Where(x => x.pro01cat02uin == id && !x.pro01deleted).Include(x => x.pro02product_files).ToListAsync();
 
+                IList<ProductResponseVM> resList = ReturnProductList(res);
+                return resList;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error:", ex);
+            }
+
+
+        }
+
+        private IList<ProductResponseVM> ReturnProductList(List<pro01product> res)
+        {
+            IList<ProductResponseVM> resList = new List<ProductResponseVM>();
+            foreach (var item in res)
+            {
+                ProductResponseVM res1 = new ProductResponseVM()
+                {
+                    ID = item.pro01uin,
+                    ProductName = item.pro01name,
+                    ProductCode = item.pro01code,
+                    CategoryId = item.pro01cat01uin,
+                    SubCategoryId = item.pro01cat02uin,
+                    Price = item.pro01price,
+                    Address = item.pro01address,
+                    MapLink = item.pro01map_link,
+                    VideoLink = item.pro01video_link,
+                    ThumbnailImgPath = item.pro01thumbnail_img_path == null ? "" : item.pro01thumbnail_img_path,
+                    Description = item.pro01description,
+                    Details = item.pro01details,
+                    PropertyStatus = (int)item.pro01property_stats,
+                    PropertyStatusValue = item.pro01property_stats.ToString(),
+                    RoomCount = item.pro01room_count,
+                    BathRoomCount = item.pro01bathroom_count,
+                    ParkingCount = item.pro01parking_count,
+                    Area = item.pro01area,
+                    Status = item.pro01status,
+                    Deleted = item.pro01deleted
+                };
+
+                List<pro02product_files> images = _dbcontext.pro02product_files.Where(x => x.pro02pro01uin == item.pro01uin && !x.pro02deleted && x.pro02status).ToList();
+
+
+                if (images.Count != 0)
+                {
+                    foreach (var image in images)
+                    {
+                        ProductFiles img = new ProductFiles()
+                        {
+                            ImageId = image.pro02uin,
+                            Name = image.pro02img_name,
+                            FilePath = image.pro02img_path,
+                            UploadedDate = image.pro02updated_date
+                        };
+                        res1.Images.Add(img);
+                    }
+                }
+                resList.Add(res1);
+            }
+            return resList;
+        }
         [HttpGet("PropertyStatusList")]
         public async Task<IEnumerable> PropertyStatusList()
         {
@@ -200,12 +283,14 @@ namespace JWT_token_auth_Demo.Controllers
                     PropertyStatusValue = product.pro01property_stats.ToString(),
                     RoomCount = product.pro01room_count,
                     BathRoomCount = product.pro01bathroom_count,
+                    ParkingCount = product.pro01parking_count,
                     Area = product.pro01area,
                     Status = product.pro01status,
                     Deleted = product.pro01deleted
                 };
 
-                List<pro02product_files> images = _dbcontext.pro02product_files.Where(x => x.pro02pro01uin == product.pro01uin).ToList();
+                List<pro02product_files> images = _dbcontext.pro02product_files.Where(x => x.pro02pro01uin == product.pro01uin && !x.pro02deleted && x.pro02status).ToList();
+
 
                 if (images.Count != 0)
                 {
@@ -213,6 +298,7 @@ namespace JWT_token_auth_Demo.Controllers
                     {
                         ProductFiles img = new ProductFiles()
                         {
+                            ImageId = image.pro02uin,
                             Name = image.pro02img_name,
                             FilePath = image.pro02img_path,
                             UploadedDate = image.pro02updated_date
@@ -230,7 +316,7 @@ namespace JWT_token_auth_Demo.Controllers
 
 
         [HttpPost("UpdateProductDes")]
-        public async Task<ActionResult<AfterSavedResponseVM>> UpdateProductDes([FromForm]ProductResponseVM res)
+        public async Task<ActionResult<AfterSavedResponseVM>> UpdateProductDes([FromForm] ProductResponseVM res)
         {
             try
             {
@@ -240,40 +326,79 @@ namespace JWT_token_auth_Demo.Controllers
                     throw new Exception("Error:Data Not Found!");
 
                 }
-                proDetails.pro01status = res.Status;
+                proDetails.pro01status = (bool)res.Status;
                 proDetails.pro01code = res.ProductCode;
                 proDetails.pro01name = res.ProductName;
                 proDetails.pro01cat01uin = res.CategoryId;
                 proDetails.pro01cat02uin = res.SubCategoryId;
-                proDetails.pro01price = res.Price;
-                proDetails.pro01area = res.Area;
+                proDetails.pro01price = (double)res.Price;
+                proDetails.pro01area = (double)res.Area;
                 proDetails.pro01map_link = res.MapLink;
                 proDetails.pro01video_link = res.VideoLink;
                 proDetails.pro01address = res.Address;
                 proDetails.pro01property_stats = (EnumPropertyStatus)res.PropertyStatus;
                 proDetails.pro01description = res.Description;
                 proDetails.pro01details = res.Details;
-                proDetails.pro01room_count = res.RoomCount;
-                proDetails.pro01bathroom_count = res.BathRoomCount;
-                proDetails.pro01deleted = res.Deleted;
+                proDetails.pro01room_count = (int)res.RoomCount;
+                proDetails.pro01bathroom_count = (int)res.BathRoomCount;
+                proDetails.pro01parking_count = (int)res.ParkingCount;
+                proDetails.pro01deleted = (bool)res.Deleted;
                 proDetails.pro01updated_date = DateTime.Now;
                 proDetails.pro01updated_name = "admin";
 
-                if (res.NewThumbnailImg !=null)
+                if (res.NewThumbnailImg != null)
                 {
-                    if (proDetails.pro01thumbnail_img_path!=null)
+                    if (proDetails.pro01thumbnail_img_path != null)
                     {
                         DeleteThumbnailImg(proDetails.pro01thumbnail_img_path);
                     }
-                    string newFilePath = UploadFile("ProductThumbnail",res.NewThumbnailImg);
+                    string newFilePath = await UploadFile("ProductThumbnail", res.NewThumbnailImg);
                     proDetails.pro01thumbnail_img_path = newFilePath;
 
                 }
-                else
-                {
-                    proDetails.pro01thumbnail_img_path = res.ThumbnailImgPath == null ? "" : res.ThumbnailImgPath;
+                /*                else
+                                {
+                                    proDetails.pro01thumbnail_img_path = res.ThumbnailImgPath == null ? "" : res.ThumbnailImgPath;
 
+                                }*/
+
+                // Load Images id that have been fetched from parameter in an array list old_files_param
+                var old_files_param = res.Images.Where(pf => !string.IsNullOrEmpty(pf.ImageId)).Select(x => x.ImageId).ToList();
+
+                //load old images values from database and save in an array list => old_files_DB
+
+                List<pro02product_files> old_files_DB = _dbcontext.pro02product_files.Where(x => x.pro02pro01uin == res.ID && !x.pro02deleted && x.pro02status).ToList();
+
+                // Compare old files from database with fetched ids and update status for missing ids
+                foreach (var oldProductFile in old_files_DB)
+                {
+                    if (!old_files_param.Contains(oldProductFile.pro02uin))
+                    {
+                        oldProductFile.pro02status = false;
+                        oldProductFile.pro02deleted = true;
+                    }
                 }
+                // Add new images from new image file
+                foreach (var imgFile in res.NewImgFile)
+                {
+
+                    string uploadedPath = await UploadFile("ProductImages", imgFile);
+
+                    pro02product_files _img = new pro02product_files();
+                    _img.pro02uin = Guid.NewGuid().ToString();
+                    _img.pro02pro01uin = res.ID;
+                    _img.pro02img_path = uploadedPath;
+                    _img.pro02img_name = imgFile!.FileName;
+                    _img.pro02status = true;
+                    _img.pro02deleted = false;
+                    _img.pro02created_date = DateTime.Now;
+                    _img.pro02updated_date = DateTime.Now;
+                    _img.pro02created_name = "admin";
+                    _img.pro02updated_name = "admin";
+
+                    _dbcontext.pro02product_files.Add(_img);
+                }
+                _dbcontext.pro02product_files.UpdateRange(old_files_DB);
                 _dbcontext.pro01product.Update(proDetails);
                 _dbcontext.SaveChanges();
             }
@@ -285,8 +410,31 @@ namespace JWT_token_auth_Demo.Controllers
             return new AfterSavedResponseVM { status = true };
         }
 
+        [HttpPost("DeleteProduct")]
+        public async Task<ActionResult<AfterSavedResponseVM>> DeleteProduct(string id)
+        {
+            try
+            {
+                if (id != null)
+                {
+                    pro01product _product = _dbcontext.pro01product.Where(x => x.pro01uin == id).FirstOrDefault();
 
-        private string UploadFile(string folderName, IFormFile file)
+                    _product.pro01status = false;
+                    _product.pro01deleted = true;
+                    _dbcontext.pro01product.Update(_product);
+                    _dbcontext.SaveChanges();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return new AfterSavedResponseVM { status = false, error_msg = ex.ToString() };
+                throw new Exception("Error:", ex);
+            }
+            return new AfterSavedResponseVM { status = true };
+
+        }
+        private async Task<string> UploadFile(string folderName, IFormFile file)
         {
             try
             {
@@ -295,10 +443,10 @@ namespace JWT_token_auth_Demo.Controllers
 
                 if (Array.IndexOf(allowedExtensions, fileExtension.ToLower()) == -1)
                 {
-                    throw new Exception("Invalid file! Only JPG, JPEG, and PNG files are allowed.");
+                    throw new InvalidOperationException("Invalid file! Only JPG, JPEG, and PNG files are allowed.");
                 }
 
-                string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(file!.FileName)}";
+                string uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
                 string yearMonthFolder = DateTime.Now.ToString("yyyy/MM");
                 string uploadsFolder = Path.Combine(folderName, yearMonthFolder);
                 string filePath = Path.Combine(uploadsFolder, uniqueFileName);
@@ -310,16 +458,16 @@ namespace JWT_token_auth_Demo.Controllers
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    file!.CopyToAsync(stream);
+                    await file.CopyToAsync(stream);
                 }
 
                 // Store file information
-                var uploadedImage = ($"~/{folderName}/{yearMonthFolder}/{uniqueFileName}");
+                var uploadedImage = Path.Combine("~", folderName, yearMonthFolder, uniqueFileName).Replace("\\", "/");
                 return uploadedImage;
             }
             catch (Exception ex)
             {
-                throw new Exception("Error:", ex);
+                throw new Exception("An error occurred while uploading the file.", ex);
             }
         }
 

@@ -78,6 +78,7 @@ namespace JWT_token_auth_Demo.Controllers
                     Occupation = userDetails.usr01occupation,
                     Post = userDetails.usr01post,
                     ContactNumber=userDetails.usr01contact_number,
+                    ProfileImagePath= userDetails.usr01profile_img_path,
                     Role = userDetails.usr01reg_role,
                     Address = userDetails.usr01address,
                     Token = new JwtSecurityTokenHandler().WriteToken(token),

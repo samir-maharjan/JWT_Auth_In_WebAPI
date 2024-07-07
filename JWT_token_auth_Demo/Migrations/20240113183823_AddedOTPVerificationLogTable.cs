@@ -12,7 +12,7 @@ namespace JWTtokenauthDemo.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "OTPVerificationLogs",
+                name: "dbo.OTPVerificationLogs",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -32,7 +32,7 @@ namespace JWTtokenauthDemo.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "OTPVerificationLogs");
+                name: "dbo.OTPVerificationLogs");
         }
     }
 }

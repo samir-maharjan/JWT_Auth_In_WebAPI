@@ -12,7 +12,7 @@ namespace JWTtokenauthDemo.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "pro02product_files",
+                name: "dbo.pro02product_files",
                 columns: table => new
                 {
                     pro02uin = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -32,14 +32,14 @@ namespace JWTtokenauthDemo.Migrations
                     table.ForeignKey(
                         name: "FK_pro02product_files_pro01product_pro02pro01uin",
                         column: x => x.pro02pro01uin,
-                        principalTable: "pro01product",
+                        principalTable: "dbo.pro01product",
                         principalColumn: "pro01uin",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_pro02product_files_pro02pro01uin",
-                table: "pro02product_files",
+                table: "dbo.pro02product_files",
                 column: "pro02pro01uin");
         }
 
@@ -47,7 +47,7 @@ namespace JWTtokenauthDemo.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "pro02product_files");
+                name: "dbo.pro02product_files");
         }
     }
 }

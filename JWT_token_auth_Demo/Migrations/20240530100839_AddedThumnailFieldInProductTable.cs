@@ -12,7 +12,7 @@ namespace JWTtokenauthDemo.Migrations
         {
             migrationBuilder.AddColumn<string>(
                 name: "pro01thumbnail_img_path",
-                table: "pro01product",
+                table: "dbo.pro01product",
                 type: "nvarchar(max)",
                 nullable: true);
         }
@@ -22,7 +22,7 @@ namespace JWTtokenauthDemo.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "pro01thumbnail_img_path",
-                table: "pro01product");
+                table: "dbo.pro01product");
         }
     }
 }

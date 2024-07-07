@@ -12,7 +12,7 @@ namespace JWTtokenauthDemo.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "cat01menu_category",
+                name: "dbo.cat01menu_category",
                 columns: table => new
                 {
                     cat01uin = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -35,7 +35,7 @@ namespace JWTtokenauthDemo.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "cat01menu_category");
+                name: "dbo.cat01menu_category");
         }
     }
 }

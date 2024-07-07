@@ -25,7 +25,7 @@ namespace JWT_token_auth_Demo.Controllers
         }
 
         [HttpPost("CreateSubMenuCategory")]
-        public async Task<ActionResult<AfterSavedResponseVM>> CreateSubMenuCategory(MenuSubCatVM menuCatVM)
+        public async Task<ActionResult<AfterSavedResponseVM>> CreateSubMenuCategory([FromForm] MenuSubCatVM menuCatVM)
         {
             try
             {
@@ -36,12 +36,19 @@ namespace JWT_token_auth_Demo.Controllers
                     category.cat02cat01uin = menuCatVM.CategoryId;
                     category.cat02sub_category_code = menuCatVM.SubCategoryCode;
                     category.cat02sub_category_title = menuCatVM.SubCategoryName;
-                    category.cat02status = menuCatVM.Status;
-                    category.cat02deleted = menuCatVM.Deleted;
+                    category.cat02status = true;
+                    category.cat02deleted = false;
                     category.cat02created_name = "Admin";
                     category.cat02updated_name = "Admin";
                     category.cat02created_date = DateTime.Now;
                     category.cat02updated_date = DateTime.Now;
+
+                    if (menuCatVM.ThumbnailImgFile != null)
+                    {
+
+                        string uploadedImage = await UploadFile("SubCategoryThumbnailImages", menuCatVM.ThumbnailImgFile);
+                        category.cat02thumbnail_img_path = uploadedImage;
+                    }
 
                     _dbcontext.cat02menu_sub_category.Add(category);
                     _dbcontext.SaveChanges();
@@ -73,6 +80,7 @@ namespace JWT_token_auth_Demo.Controllers
                         CategoryTitle = item.cat01menu_category.cat01category_title,
                         SubCategoryTitle = item.cat02sub_category_title,
                         SubCategoryCode = item.cat02sub_category_code,
+                        ThumbnailImagePath =item.cat02thumbnail_img_path,
                         Status = item.cat02status,
                         Deleted = item.cat02deleted
                     };
@@ -126,7 +134,7 @@ namespace JWT_token_auth_Demo.Controllers
         {
             try
             {
-                cat02menu_sub_category res = _dbcontext.cat02menu_sub_category.Where(x => x.cat02uin == id).Include(x => x.cat01menu_category).FirstOrDefault();
+                cat02menu_sub_category? res = _dbcontext.cat02menu_sub_category.Where(x => x.cat02uin == id).Include(x => x.cat01menu_category).FirstOrDefault();
                 if (res == null)
                 {
                     throw new Exception("Error:Data Not Found!");
@@ -139,6 +147,7 @@ namespace JWT_token_auth_Demo.Controllers
                     SubCategoryTitle = res.cat02sub_category_title,
                     CategoryID = res.cat02cat01uin,
                     CategoryTitle = res.cat01menu_category.cat01category_title,
+                    ThumbnailImagePath = res.cat02thumbnail_img_path,
                     Status = res.cat02status,
                     Deleted = res.cat02deleted
                 };
@@ -152,24 +161,32 @@ namespace JWT_token_auth_Demo.Controllers
 
 
         [HttpPost("UpdateSubCategory")]
-        public async Task<ActionResult<AfterSavedResponseVM>> UpdateSubCategory(SubCategoryVM res)
+        public async Task<ActionResult<AfterSavedResponseVM>> UpdateSubCategory([FromForm] MenuSubCatVM res)
         {
             try
             {
-                cat02menu_sub_category catDetails = _dbcontext.cat02menu_sub_category.Where(x => x.cat02uin == res.ID).Include(x=>x.cat01menu_category).FirstOrDefault();
+                cat02menu_sub_category? catDetails = _dbcontext.cat02menu_sub_category.Where(x => x.cat02uin == res.Id).Include(x=>x.cat01menu_category).FirstOrDefault();
                 if (catDetails == null)
                 {
                     throw new Exception("Error:Data Not Found!");
 
                 }
                 catDetails.cat02sub_category_code = res.SubCategoryCode;
-                catDetails.cat02sub_category_title = res.SubCategoryTitle;
+                catDetails.cat02sub_category_title = res.SubCategoryName;
                 catDetails.cat02cat01uin = res.CategoryID;
                 catDetails.cat02status = res.Status;
                 catDetails.cat02deleted = res.Deleted;
                 catDetails.cat02updated_date = DateTime.Now;
                 catDetails.cat02updated_name = "admin";
-
+                if (res.ThumbnailImgFile != null)
+                {
+                    if (catDetails.cat02thumbnail_img_path != null)
+                    {
+                        DeleteProfileImg(catDetails.cat02thumbnail_img_path);
+                    }
+                    string newFilePath = await UploadFile("SubCategoryThumbnailImages", res.ThumbnailImgFile);
+                    catDetails.cat02thumbnail_img_path = newFilePath;
+                }
                 _dbcontext.cat02menu_sub_category.Update(catDetails);
                 _dbcontext.SaveChanges();
             }
@@ -179,6 +196,61 @@ namespace JWT_token_auth_Demo.Controllers
                 throw new Exception("Error:", ex);
             }
             return new AfterSavedResponseVM { status = true };
+        }
+
+        private async Task<string> UploadFile(string folderName, IFormFile file)
+        {
+            try
+            {
+                string[] allowedExtensions = { ".jpg", ".jpeg", ".png" };
+                string fileExtension = Path.GetExtension(file!.FileName);
+
+                if (Array.IndexOf(allowedExtensions, fileExtension.ToLower()) == -1)
+                {
+                    throw new InvalidOperationException("Invalid file! Only JPG, JPEG, and PNG files are allowed.");
+                }
+
+                string uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
+                string yearMonthFolder = DateTime.Now.ToString("yyyy/MM");
+                string uploadsFolder = Path.Combine(folderName, yearMonthFolder);
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                // Store file information
+                var uploadedImage = Path.Combine("~", folderName, yearMonthFolder, uniqueFileName).Replace("\\", "/");
+                return uploadedImage;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while uploading the file.", ex);
+            }
+        }
+
+        private IActionResult DeleteProfileImg(string relativePath)
+        {
+            try
+            {
+                var absolutePath = Path.Combine(relativePath.TrimStart('~').TrimStart('/'));
+                if (System.IO.File.Exists(absolutePath))
+                {
+                    System.IO.File.Delete(absolutePath); // delete file from the file path
+                    return Ok("File deleted successfully.");
+                }
+                return NotFound("File not found.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }

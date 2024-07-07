@@ -12,7 +12,7 @@ namespace JWTtokenauthDemo.Migrations
         {
             migrationBuilder.AddColumn<int>(
                 name: "pro01property_stats",
-                table: "pro01product",
+                table: "dbo.pro01product",
                 type: "int",
                 nullable: false,
                 defaultValue: 0);
@@ -23,7 +23,7 @@ namespace JWTtokenauthDemo.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "pro01property_stats",
-                table: "pro01product");
+                table: "dbo.pro01product");
         }
     }
 }

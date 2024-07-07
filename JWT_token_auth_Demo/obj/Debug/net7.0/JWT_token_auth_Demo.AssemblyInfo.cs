@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("JWT_token_auth_Demo")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8293165a05afa092d17529aa974e5fe8c6e39b50")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fac1638accfa7ef0d31d641a995525a264ca7b40")]
 [assembly: System.Reflection.AssemblyProductAttribute("JWT_token_auth_Demo")]
 [assembly: System.Reflection.AssemblyTitleAttribute("JWT_token_auth_Demo")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

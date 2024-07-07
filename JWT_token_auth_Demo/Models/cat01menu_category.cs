@@ -8,6 +8,7 @@ namespace JWT_token_auth_Demo.Models
         public string cat01uin { get; set; }
         public string cat01category_title { get; set; }
         public string cat01category_code { get; set; }
+        public string cat01thumbnail_img_path { get; set; }
         public bool cat01status { get; set; }
         public bool cat01deleted { get; set; }
         public string cat01created_name { get; set; }

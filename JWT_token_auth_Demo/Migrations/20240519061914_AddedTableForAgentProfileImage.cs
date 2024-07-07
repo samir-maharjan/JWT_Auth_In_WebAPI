@@ -12,7 +12,7 @@ namespace JWTtokenauthDemo.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "agent02profile_img",
+                name: "dbo.agent02profile_img",
                 columns: table => new
                 {
                     agent02uin = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -32,14 +32,14 @@ namespace JWTtokenauthDemo.Migrations
                     table.ForeignKey(
                         name: "FK_agent02profile_img_agent01profile_agent02agent01uin",
                         column: x => x.agent02agent01uin,
-                        principalTable: "agent01profile",
+                        principalTable: "dbo.agent01profile",
                         principalColumn: "agent01uin",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_agent02profile_img_agent02agent01uin",
-                table: "agent02profile_img",
+                table: "dbo.agent02profile_img",
                 column: "agent02agent01uin");
         }
 
@@ -47,7 +47,7 @@ namespace JWTtokenauthDemo.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "agent02profile_img");
+                name: "dbo.agent02profile_img");
         }
     }
 }

@@ -20,6 +20,7 @@ namespace JWT_token_auth_Demo.Models
         public string? pro01thumbnail_img_path { get; set; }
         public int pro01room_count { get; set; }
         public int pro01bathroom_count { get; set; }
+        public int pro01parking_count { get; set; }
         public double pro01area { get; set; }
         public EnumPropertyStatus pro01property_stats { get; set; }
 
