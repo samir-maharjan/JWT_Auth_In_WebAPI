@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using System;
 using System.Text.RegularExpressions;
 
@@ -177,11 +179,27 @@ namespace JWT_token_auth_Demo.Controllers
                 string uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
                 string yearMonthFolder = DateTime.Now.ToString("yyyy/MM");
                 string uploadsFolder = Path.Combine(folderName, yearMonthFolder);
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
+                }
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var image = Image.Load(file.OpenReadStream()))
+                {
+                    // Resize the image (optional)
+                    /* image.Mutate(x => x.Resize(new ResizeOptions
+                     {
+                         Mode = ResizeMode.Max,
+                         Size = new Size(800, 600) // Adjust dimensions as needed
+                     }));*/
+
+                    // Save the compressed image
+                    await image.SaveAsync(filePath, new JpegEncoder
+                    {
+                        Quality = 50 // Adjust quality as needed
+                    });
                 }
 
                 using (var stream = new FileStream(filePath, FileMode.Create))

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using System;
 using System.Text.RegularExpressions;
 
@@ -29,7 +31,7 @@ namespace JWT_token_auth_Demo.Controllers
         {
             try
             {
-                if (menuCatVM !=null)
+                if (menuCatVM != null)
                 {
                     cat02menu_sub_category category = new cat02menu_sub_category();
                     category.cat02uin = Guid.NewGuid().ToString();
@@ -69,7 +71,7 @@ namespace JWT_token_auth_Demo.Controllers
         {
             try
             {
-                List<cat02menu_sub_category> res = await _dbcontext.cat02menu_sub_category.Where(x => !x.cat02deleted).Include(x=>x.cat01menu_category).ToListAsync();
+                List<cat02menu_sub_category> res = await _dbcontext.cat02menu_sub_category.Where(x => !x.cat02deleted).Include(x => x.cat01menu_category).ToListAsync();
                 IList<SubCategoryResponseVM> resList = new List<SubCategoryResponseVM>();
                 foreach (var item in res)
                 {
@@ -80,7 +82,7 @@ namespace JWT_token_auth_Demo.Controllers
                         CategoryTitle = item.cat01menu_category.cat01category_title,
                         SubCategoryTitle = item.cat02sub_category_title,
                         SubCategoryCode = item.cat02sub_category_code,
-                        ThumbnailImagePath =item.cat02thumbnail_img_path,
+                        ThumbnailImagePath = item.cat02thumbnail_img_path,
                         Status = item.cat02status,
                         Deleted = item.cat02deleted
                     };
@@ -94,7 +96,7 @@ namespace JWT_token_auth_Demo.Controllers
                 throw new Exception("Error:", ex);
             }
 
-           
+
         }
 
         [HttpGet("SubCategoryListWithCategoryID")]
@@ -102,7 +104,7 @@ namespace JWT_token_auth_Demo.Controllers
         {
             try
             {
-                List<cat02menu_sub_category> res = await _dbcontext.cat02menu_sub_category.Where(x => x.cat02cat01uin==id && !x.cat02deleted).Include(x => x.cat01menu_category).ToListAsync();
+                List<cat02menu_sub_category> res = await _dbcontext.cat02menu_sub_category.Where(x => x.cat02cat01uin == id && !x.cat02deleted).Include(x => x.cat01menu_category).ToListAsync();
                 IList<SubCategoryResponseVM> resList = new List<SubCategoryResponseVM>();
                 foreach (var item in res)
                 {
@@ -165,7 +167,7 @@ namespace JWT_token_auth_Demo.Controllers
         {
             try
             {
-                cat02menu_sub_category? catDetails = _dbcontext.cat02menu_sub_category.Where(x => x.cat02uin == res.Id).Include(x=>x.cat01menu_category).FirstOrDefault();
+                cat02menu_sub_category? catDetails = _dbcontext.cat02menu_sub_category.Where(x => x.cat02uin == res.Id).Include(x => x.cat01menu_category).FirstOrDefault();
                 if (catDetails == null)
                 {
                     throw new Exception("Error:Data Not Found!");
@@ -213,18 +215,33 @@ namespace JWT_token_auth_Demo.Controllers
                 string uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
                 string yearMonthFolder = DateTime.Now.ToString("yyyy/MM");
                 string uploadsFolder = Path.Combine(folderName, yearMonthFolder);
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
                 }
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                /*  using (var stream = new FileStream(filePath, FileMode.Create))
+                  {
+                      await file.CopyToAsync(stream);
+                  }*/
+
+                using (var image = Image.Load(file.OpenReadStream()))
                 {
-                    await file.CopyToAsync(stream);
-                }
+                    // Resize the image (optional)
+                    /* image.Mutate(x => x.Resize(new ResizeOptions
+                     {
+                         Mode = ResizeMode.Max,
+                         Size = new Size(800, 600) // Adjust dimensions as needed
+                     }));*/
 
+                    // Save the compressed image
+                    await image.SaveAsync(filePath, new JpegEncoder
+                    {
+                        Quality = 50 // Adjust quality as needed
+                    });
+                }
                 // Store file information
                 var uploadedImage = Path.Combine("~", folderName, yearMonthFolder, uniqueFileName).Replace("\\", "/");
                 return uploadedImage;

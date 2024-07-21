@@ -82,3 +82,5 @@ D:\Projects\Demo\JWT_token_auth_Demo\JWT_token_auth_Demo\obj\Debug\net7.0\refint
 D:\Projects\Demo\JWT_token_auth_Demo\JWT_token_auth_Demo\obj\Debug\net7.0\JWT_token_auth_Demo.pdb
 D:\Projects\Demo\JWT_token_auth_Demo\JWT_token_auth_Demo\obj\Debug\net7.0\JWT_token_auth_Demo.genruntimeconfig.cache
 D:\Projects\Demo\JWT_token_auth_Demo\JWT_token_auth_Demo\obj\Debug\net7.0\ref\JWT_token_auth_Demo.dll
+D:\Projects\Demo\JWT_token_auth_Demo\JWT_token_auth_Demo\bin\Debug\net7.0\Serilog.dll
+D:\Projects\Demo\JWT_token_auth_Demo\JWT_token_auth_Demo\bin\Debug\net7.0\SixLabors.ImageSharp.dll

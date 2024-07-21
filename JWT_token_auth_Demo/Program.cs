@@ -12,6 +12,8 @@ using Microsoft.OpenApi.Models;
 using JWT_token_auth_Demo.StaticHelper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
 
 
 internal class Program
@@ -102,8 +104,95 @@ internal class Program
 
         #endregion
         var app = builder.Build();
+        try
+        {
+            // Ensure directories exist or create them
+            string CaruoselImages = Path.Combine(Directory.GetCurrentDirectory(), "CaruoselImages");
+            string SubCategoryThumbnailImages = Path.Combine(Directory.GetCurrentDirectory(), "SubCategoryThumbnailImages");
+            string ProfileImages = Path.Combine(Directory.GetCurrentDirectory(), "ProfileImages");
+            string CategoryThumbnailImages = Path.Combine(Directory.GetCurrentDirectory(), "CategoryThumbnailImages");
+            string ProductThumbnail = Path.Combine(Directory.GetCurrentDirectory(), "ProductThumbnail");
+            string AgentProfileImages = Path.Combine(Directory.GetCurrentDirectory(), "AgentProfileImages");
 
-        app.UseStaticFiles();
+            if (!Directory.Exists(CaruoselImages))
+            {
+                Directory.CreateDirectory(CaruoselImages);
+                Console.WriteLine($"Directory {CaruoselImages} created.");
+            }
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "CaruoselImages")),
+                RequestPath = "/CaruoselImages"
+            });
+
+            if (!Directory.Exists(SubCategoryThumbnailImages))
+            {
+                Directory.CreateDirectory(SubCategoryThumbnailImages);
+                Console.WriteLine($"Directory {SubCategoryThumbnailImages} created.");
+            }
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "SubCategoryThumbnailImages")),
+                RequestPath = "/SubCategoryThumbnailImages"
+            });
+
+            if (!Directory.Exists(ProfileImages))
+            {
+                Directory.CreateDirectory(ProfileImages);
+                Console.WriteLine($"Directory {ProfileImages} created.");
+            }
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "ProfileImages")),
+                RequestPath = "/ProfileImages"
+            });
+
+            if (!Directory.Exists(CategoryThumbnailImages))
+            {
+                Directory.CreateDirectory(CategoryThumbnailImages);
+                Console.WriteLine($"Directory {CategoryThumbnailImages} created.");
+            }
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "CategoryThumbnailImages")),
+                RequestPath = "/CategoryThumbnailImages"
+            });
+
+            if (!Directory.Exists(ProductThumbnail))
+            {
+                Directory.CreateDirectory(ProductThumbnail);
+                Console.WriteLine($"Directory {ProductThumbnail} created.");
+            }
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "ProductThumbnail")),
+                RequestPath = "/ProductThumbnail"
+            });
+
+            if (!Directory.Exists(AgentProfileImages))
+            {
+                Directory.CreateDirectory(AgentProfileImages);
+                Console.WriteLine($"Directory {AgentProfileImages} created.");
+            }
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "AgentProfileImages")),
+                RequestPath = "/AgentProfileImages"
+            });
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred {ex} while configuring static file providers.");
+            throw;
+        }
+
 
         app.UseCors("MyPolicy");
 

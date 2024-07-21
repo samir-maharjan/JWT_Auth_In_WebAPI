@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "GC+V8JUgGXD23V0KdeaAyQBQlt71TS5xKakmwGaCkLsTdM5uCec7cf+CAY5bgt2/GwZtPYl3NpxNoy4GpXV6hg==",
+  "dgSpecHash": "y3VImjAWrtNqD9MfcltnmMwpgpHRwEN0+egyIC8p0d4KPl3nRztwCIwdwzG39+GsSLnvgFdaiE/sbEI36SJEWA==",
   "success": true,
   "projectFilePath": "D:\\Projects\\Demo\\JWT_token_auth_Demo\\JWT_token_auth_Demo\\JWT_token_auth_Demo.csproj",
   "expectedPackageFiles": [
@@ -52,6 +52,8 @@
     "C:\\Users\\mails\\.nuget\\packages\\microsoft.win32.registry\\5.0.0\\microsoft.win32.registry.5.0.0.nupkg.sha512",
     "C:\\Users\\mails\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
     "C:\\Users\\mails\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
+    "C:\\Users\\mails\\.nuget\\packages\\serilog\\4.0.0\\serilog.4.0.0.nupkg.sha512",
+    "C:\\Users\\mails\\.nuget\\packages\\sixlabors.imagesharp\\3.1.4\\sixlabors.imagesharp.3.1.4.nupkg.sha512",
     "C:\\Users\\mails\\.nuget\\packages\\swashbuckle.aspnetcore\\6.4.0\\swashbuckle.aspnetcore.6.4.0.nupkg.sha512",
     "C:\\Users\\mails\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.4.0\\swashbuckle.aspnetcore.swagger.6.4.0.nupkg.sha512",
     "C:\\Users\\mails\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.4.0\\swashbuckle.aspnetcore.swaggergen.6.4.0.nupkg.sha512",
