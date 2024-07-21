@@ -227,20 +227,46 @@ namespace JWT_token_auth_Demo.Controllers
                       await file.CopyToAsync(stream);
                   }*/
 
-                using (var image = Image.Load(file.OpenReadStream()))
+                using (var originalImageStream = file.OpenReadStream())
                 {
-                    // Resize the image (optional)
-                    /* image.Mutate(x => x.Resize(new ResizeOptions
-                     {
-                         Mode = ResizeMode.Max,
-                         Size = new Size(800, 600) // Adjust dimensions as needed
-                     }));*/
-
-                    // Save the compressed image
-                    await image.SaveAsync(filePath, new JpegEncoder
+                    using (var image = Image.Load(originalImageStream))
                     {
-                        Quality = 50 // Adjust quality as needed
-                    });
+                        // Resize the image (optional)
+                        /*image.Mutate(x => x.Resize(new ResizeOptions
+                        {
+                            Mode = ResizeMode.Max,
+                            Size = new Size(800, 600) // Adjust dimensions as needed
+                        }));*/
+
+                        // Save the compressed image to a memory stream
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            image.Save(memoryStream, new JpegEncoder
+                            {
+                                Quality = 75 // Adjust quality as needed
+                            });
+
+                            // Compare sizes
+                            if (memoryStream.Length < originalImageStream.Length)
+                            {
+                                // Save compressed image to file
+                                using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
+                                {
+                                    memoryStream.Position = 0;
+                                    await memoryStream.CopyToAsync(fileStream);
+                                }
+                            }
+                            else
+                            {
+                                // Save original image to file if it's smaller or the same size
+                                originalImageStream.Position = 0; // Reset stream position
+                                using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
+                                {
+                                    await originalImageStream.CopyToAsync(fileStream);
+                                }
+                            }
+                        }
+                    }
                 }
                 // Store file information
                 var uploadedImage = Path.Combine("~", folderName, yearMonthFolder, uniqueFileName).Replace("\\", "/");
