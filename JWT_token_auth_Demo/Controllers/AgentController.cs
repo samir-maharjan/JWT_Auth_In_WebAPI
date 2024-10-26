@@ -53,8 +53,8 @@ namespace JWT_token_auth_Demo.Controllers
                     agent.agent01updated_name = "Admin";
                     agent.agent01created_date = DateTime.Now;
                     agent.agent01updated_date = DateTime.Now;
-                    
-                    if(agentVM.ImgFile != null)
+
+                    if (agentVM.ImgFile != null)
                     {
 
                         string uploadedImage = await UploadFile("AgentProfileImages", agentVM.ImgFile);
@@ -93,14 +93,16 @@ namespace JWT_token_auth_Demo.Controllers
                         Experience = item.agent01experience,
                         Skill = item.agent01skill,
                         Email = item.agent01email,
-                        Description = item.agent01designation,
+                        Description = item.agent01description,
                         Contact = item.agent01contact,
                         FBLink = item.agent01fb_link,
                         WebsiteLink = item.agent01website_link,
-                        LinkedInLink = item.agent01fb_link,
+                        LinkedInLink = item.agent01linked_in_profile,
                         Status = item.agent01status,
                         Deleted = item.agent01deleted,
-                        AgentImgPath = item.agent01profile_img_path
+                        AgentImgPath = item.agent01profile_img_path,
+                        CreatedDate = item.agent01created_date,
+                        UpdatedDate = item.agent01updated_date
                     };
                     resList.Add(res1);
                 }
@@ -136,14 +138,16 @@ namespace JWT_token_auth_Demo.Controllers
                     Experience = agent.agent01experience,
                     Skill = agent.agent01skill,
                     Email = agent.agent01email,
-                    Description = agent.agent01designation,
+                    Description = agent.agent01description,
                     Contact = agent.agent01contact,
                     FBLink = agent.agent01fb_link,
                     WebsiteLink = agent.agent01website_link,
-                    LinkedInLink = agent.agent01fb_link,
+                    LinkedInLink = agent.agent01linked_in_profile,
                     Status = agent.agent01status,
                     Deleted = agent.agent01deleted,
-                    AgentImgPath = agent.agent01profile_img_path ==null? "" : agent.agent01profile_img_path
+                    CreatedDate = agent.agent01created_date,
+                    UpdatedDate = agent.agent01updated_date,
+                    AgentImgPath = agent.agent01profile_img_path == null ? "" : agent.agent01profile_img_path
                 };
                 return res1;
             }
@@ -273,7 +277,7 @@ namespace JWT_token_auth_Demo.Controllers
                         }
                     }
                 }
-                
+
                 // Store file information
                 var uploadedImage = Path.Combine("~", folderName, yearMonthFolder, uniqueFileName).Replace("\\", "/");
                 return uploadedImage;

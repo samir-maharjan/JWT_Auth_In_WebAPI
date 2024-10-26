@@ -102,12 +102,24 @@ internal class Program
         _config.GetSection(StaticGeneralAppConfig.AppSettings)
             .Bind(StaticGeneralAppConfig.Config);
 
+
+
         #endregion
         var app = builder.Build();
+        //Configure Static File Caching
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            OnPrepareResponse = ctx =>
+            {
+                ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=600");
+            }
+        });
+
         try
         {
             // Ensure directories exist or create them
             string CaruoselImages = Path.Combine(Directory.GetCurrentDirectory(), "CaruoselImages");
+            string ProductImages = Path.Combine(Directory.GetCurrentDirectory(), "ProductImages");
             string SubCategoryThumbnailImages = Path.Combine(Directory.GetCurrentDirectory(), "SubCategoryThumbnailImages");
             string ProfileImages = Path.Combine(Directory.GetCurrentDirectory(), "ProfileImages");
             string CategoryThumbnailImages = Path.Combine(Directory.GetCurrentDirectory(), "CategoryThumbnailImages");
@@ -124,6 +136,18 @@ internal class Program
             {
                 FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "CaruoselImages")),
                 RequestPath = "/CaruoselImages"
+            });
+
+            if (!Directory.Exists(ProductImages))
+            {
+                Directory.CreateDirectory(ProductImages);
+                Console.WriteLine($"Directory {ProductImages} created.");
+            }
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "ProductImages")),
+                RequestPath = "/ProductImages"
             });
 
             if (!Directory.Exists(SubCategoryThumbnailImages))
@@ -185,6 +209,8 @@ internal class Program
                 FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "AgentProfileImages")),
                 RequestPath = "/AgentProfileImages"
             });
+
+           
 
         }
         catch (Exception ex)

@@ -89,7 +89,9 @@ namespace JWT_token_auth_Demo.Controllers
                         Agent = item.lead01agent,
                         QueryMessgae = item.lead01query_message,
                         Status = item.lead01status,
-                        Deleted = item.lead01deleted
+                        Deleted = item.lead01deleted,
+                        CreatedDate =item.lead01created_date,
+                        UpdatedDate =item.lead01updated_date
                     };
                     resList.Add(res1);
                 }
@@ -127,7 +129,9 @@ namespace JWT_token_auth_Demo.Controllers
                     Agent = item.lead01agent,
                     QueryMessgae = item.lead01query_message,
                     Status = item.lead01status,
-                    Deleted = item.lead01deleted
+                    Deleted = item.lead01deleted,
+                    CreatedDate = item.lead01created_date,
+                    UpdatedDate = item.lead01updated_date
                 };
                 return res1;
             }

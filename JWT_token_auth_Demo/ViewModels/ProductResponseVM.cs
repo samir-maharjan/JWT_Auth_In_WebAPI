@@ -29,6 +29,8 @@ namespace JWT_token_auth_Demo.ViewModels
         public double? Area { get; set; }
         public bool? Status { get; set; }
         public bool? Deleted { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
         public List<ProductFiles>? Images { get; set; }
         public List<IFormFile>? NewImgFile { get; set; }
 

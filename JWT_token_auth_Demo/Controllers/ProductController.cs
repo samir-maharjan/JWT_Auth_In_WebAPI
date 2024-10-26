@@ -108,7 +108,12 @@ namespace JWT_token_auth_Demo.Controllers
         {
             try
             {
-                List<pro01product> res = await _dbcontext.pro01product.Where(x => !x.pro01deleted).ToListAsync();
+               // List<pro01product> res = await _dbcontext.pro01product.Where(x => !x.pro01deleted).ToListAsync();
+                List<pro01product> res = await _dbcontext.pro01product
+                                                .Where(x => !x.pro01deleted)
+                                                .OrderByDescending(x => x.pro01created_date)
+                                                .Take(100)
+                                                .ToListAsync();
                 IList<ProductResponseVM> resList = new List<ProductResponseVM>();
                 foreach (var item in res)
                 {
@@ -133,7 +138,9 @@ namespace JWT_token_auth_Demo.Controllers
                         ParkingCount = item.pro01parking_count,
                         Area = item.pro01area,
                         Status = item.pro01status,
-                        Deleted = item.pro01deleted
+                        Deleted = item.pro01deleted,
+                        CreatedDate = item.pro01created_date,
+                        UpdatedDate = item.pro01updated_date
                     };
                     List<pro02product_files> images = _dbcontext.pro02product_files.Where(x => x.pro02pro01uin == item.pro01uin && !x.pro02deleted && x.pro02status).ToList();
 
@@ -224,7 +231,9 @@ namespace JWT_token_auth_Demo.Controllers
                     ParkingCount = item.pro01parking_count,
                     Area = item.pro01area,
                     Status = item.pro01status,
-                    Deleted = item.pro01deleted
+                    Deleted = item.pro01deleted,
+                    CreatedDate = item.pro01created_date,
+                    UpdatedDate = item.pro01updated_date
                 };
 
                 List<pro02product_files> images = _dbcontext.pro02product_files.Where(x => x.pro02pro01uin == item.pro01uin && !x.pro02deleted && x.pro02status).ToList();
@@ -288,7 +297,9 @@ namespace JWT_token_auth_Demo.Controllers
                     ParkingCount = product.pro01parking_count,
                     Area = product.pro01area,
                     Status = product.pro01status,
-                    Deleted = product.pro01deleted
+                    Deleted = product.pro01deleted,
+                    CreatedDate = product.pro01created_date,
+                    UpdatedDate = product.pro01updated_date
                 };
 
                 List<pro02product_files> images = _dbcontext.pro02product_files.Where(x => x.pro02pro01uin == product.pro01uin && !x.pro02deleted && x.pro02status).ToList();

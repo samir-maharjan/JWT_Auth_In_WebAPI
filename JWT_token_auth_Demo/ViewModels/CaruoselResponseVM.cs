@@ -12,6 +12,8 @@ namespace JWT_token_auth_Demo.ViewModels
         public string? CaruoselLink { get; set; }
         public bool Status { get; set; }
         public bool Deleted { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
 
     }
 }

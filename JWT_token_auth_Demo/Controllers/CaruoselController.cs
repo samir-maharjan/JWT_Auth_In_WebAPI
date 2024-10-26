@@ -153,7 +153,9 @@ namespace JWT_token_auth_Demo.Controllers
                         ImagePath = item.car01img_path,
                         ImageName = item.car01img_name,
                         Status = item.car01status,
-                        Deleted = item.car01deleted
+                        Deleted = item.car01deleted,
+                        CreatedDate = item.car01created_date,
+                        UpdatedDate = item.car01updated_date
                     };
                     resList.Add(res1);
                 }
@@ -188,7 +190,9 @@ namespace JWT_token_auth_Demo.Controllers
                     CaruoselLink = imgDetails.car01link,
                     ImageName = imgDetails.car01img_name,
                     Status = imgDetails.car01status,
-                    Deleted = imgDetails.car01deleted
+                    Deleted = imgDetails.car01deleted,
+                    CreatedDate = imgDetails.car01created_date,
+                    UpdatedDate = imgDetails.car01updated_date
                 };
                 return res1;
             }
