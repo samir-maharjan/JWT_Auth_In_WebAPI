@@ -17,8 +17,8 @@ namespace JWT_token_auth_Demo
             Leased = 3,
             [Description("On Rent")]
             OnRent = 4,
-            [Description("Rented")]
-            Rented = 5
+            [Description("Buy")]
+            Buy = 5
         }
     }
 }

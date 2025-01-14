@@ -8,7 +8,7 @@ namespace JWT_token_auth_Demo.ViewModels
         {
             Images = new List<ProductFiles>();
         }
-        public string? ID { get; set; }
+        public string ID { get; set; }
         public string? ProductCode { get; set; }
         public string? ProductName { get; set; }
         public string? CategoryId { get; set; }

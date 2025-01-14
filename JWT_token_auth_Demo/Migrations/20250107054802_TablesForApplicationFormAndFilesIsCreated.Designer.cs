@@ -4,6 +4,7 @@ using JWT_token_auth_Demo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JWTtokenauthDemo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250107054802_TablesForApplicationFormAndFilesIsCreated")]
+    partial class TablesForApplicationFormAndFilesIsCreated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -372,9 +375,8 @@ namespace JWTtokenauthDemo.Migrations
                     b.Property<string>("form01description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("form01emali_address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double>("form01emali_address")
+                        .HasColumnType("float");
 
                     b.Property<string>("form01first_name")
                         .IsRequired()

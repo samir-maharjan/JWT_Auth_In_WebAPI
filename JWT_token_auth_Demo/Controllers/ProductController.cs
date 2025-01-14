@@ -148,14 +148,13 @@ namespace JWT_token_auth_Demo.Controllers
                     {
                         foreach (var image in images)
                         {
-                            ProductFiles img = new ProductFiles()
+                            res1.Images.Add(new ProductFiles
                             {
                                 ImageId = image.pro02uin,
                                 Name = image.pro02img_name,
                                 FilePath = image.pro02img_path,
                                 UploadedDate = image.pro02updated_date
-                            };
-                            res1.Images.Add(img);
+                            });
                         }
                     }
                     resList.Add(res1);
@@ -169,6 +168,103 @@ namespace JWT_token_auth_Demo.Controllers
             }
         }
 
+        [HttpPost("FilterProductList")]
+        public async Task<IEnumerable<ProductResponseVM>> FilterProductList([FromForm] ProductSearchVM searchParams)
+        {
+            try
+            {
+                var query = _dbcontext.pro01product.AsQueryable();
+
+                // Apply filters based on search parameters
+                if (!string.IsNullOrEmpty(searchParams.CategoryId))
+                    query = query.Where(x => x.pro01cat01uin == searchParams.CategoryId);
+
+                if (!string.IsNullOrEmpty(searchParams.SubCategoryId))
+                    query = query.Where(x => x.pro01cat02uin == searchParams.SubCategoryId);
+
+                if (searchParams.RoomCount.HasValue)
+                    query = query.Where(x => x.pro01room_count == searchParams.RoomCount.Value);
+
+                if (searchParams.BathRoomCount.HasValue)
+                    query = query.Where(x => x.pro01bathroom_count == searchParams.BathRoomCount.Value);
+
+                if (searchParams.ParkingCount.HasValue)
+                    query = query.Where(x => x.pro01parking_count == searchParams.ParkingCount.Value);
+
+                if (searchParams.MinPrice.HasValue)
+                    query = query.Where(x => x.pro01price >= searchParams.MinPrice.Value);
+
+                if (searchParams.MaxPrice.HasValue)
+                    query = query.Where(x => x.pro01price <= searchParams.MaxPrice.Value);
+
+                if (searchParams.MinArea.HasValue)
+                    query = query.Where(x => x.pro01area >= searchParams.MinArea.Value);
+
+                if (searchParams.MaxArea.HasValue)
+                    query = query.Where(x => x.pro01area <= searchParams.MaxArea.Value);
+
+                // Fetch filtered results
+                var res = await query
+                    .Where(x => !x.pro01deleted)
+                    .OrderByDescending(x => x.pro01created_date)
+                    .Take(100)
+                    .ToListAsync();
+
+                // Transform the results into response view model
+                IList<ProductResponseVM> resList = new List<ProductResponseVM>();
+                foreach (var item in res)
+                {
+                    var res1 = new ProductResponseVM
+                    {
+                        ID = item.pro01uin,
+                        ProductName = item.pro01name,
+                        ProductCode = item.pro01code,
+                        CategoryId = item.pro01cat01uin,
+                        SubCategoryId = item.pro01cat02uin,
+                        Price = item.pro01price,
+                        Address = item.pro01address,
+                        MapLink = item.pro01map_link,
+                        VideoLink = item.pro01video_link,
+                        ThumbnailImgPath = item.pro01thumbnail_img_path ?? string.Empty,
+                        Description = item.pro01description,
+                        Details = item.pro01details,
+                        PropertyStatus = (int)item.pro01property_stats,
+                        PropertyStatusValue = item.pro01property_stats.ToString(),
+                        RoomCount = item.pro01room_count,
+                        BathRoomCount = item.pro01bathroom_count,
+                        ParkingCount = item.pro01parking_count,
+                        Area = item.pro01area,
+                        Status = item.pro01status,
+                        Deleted = item.pro01deleted,
+                        CreatedDate = item.pro01created_date,
+                        UpdatedDate = item.pro01updated_date
+                    };
+
+                    var images = _dbcontext.pro02product_files
+                        .Where(x => x.pro02pro01uin == item.pro01uin && !x.pro02deleted && x.pro02status)
+                        .ToList();
+
+                    foreach (var image in images)
+                    {
+                        res1.Images.Add(new ProductFiles
+                        {
+                            ImageId = image.pro02uin,
+                            Name = image.pro02img_name,
+                            FilePath = image.pro02img_path,
+                            UploadedDate = image.pro02updated_date
+                        });
+                    }
+
+                    resList.Add(res1);
+                }
+
+                return resList;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error:", ex);
+            }
+        }
 
         [HttpGet("ProductListWithCategoryID")]
         public async Task<IEnumerable<ProductResponseVM>> ProductListWithCategoryID(string id)
@@ -333,12 +429,19 @@ namespace JWT_token_auth_Demo.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(res.ID) || string.IsNullOrWhiteSpace(res.ID))
+                {
+                    throw new ArgumentException("ID cannot be null or empty.");
+                }
+
                 pro01product proDetails = _dbcontext.pro01product.Where(x => x.pro01uin == res.ID).FirstOrDefault();
+
                 if (proDetails == null)
                 {
                     throw new Exception("Error:Data Not Found!");
 
                 }
+
                 proDetails.pro01status = (bool)res.Status;
                 proDetails.pro01code = res.ProductCode;
                 proDetails.pro01name = res.ProductName;
@@ -391,26 +494,34 @@ namespace JWT_token_auth_Demo.Controllers
                         oldProductFile.pro02deleted = true;
                     }
                 }
-                // Add new images from new image file
-                foreach (var imgFile in res.NewImgFile)
+                if (res.NewImgFile != null && res.NewImgFile.Any())
                 {
+                    foreach (var imgFile in res.NewImgFile)
+                    {
+                        if (imgFile == null)
+                        {
+                            continue; // Skip processing if imgFile is null
+                        }
 
-                    string uploadedPath = await UploadFile("ProductImages", imgFile);
+                        string uploadedPath = await UploadFile("ProductImages", imgFile);
 
-                    pro02product_files _img = new pro02product_files();
-                    _img.pro02uin = Guid.NewGuid().ToString();
-                    _img.pro02pro01uin = res.ID;
-                    _img.pro02img_path = uploadedPath;
-                    _img.pro02img_name = imgFile!.FileName;
-                    _img.pro02status = true;
-                    _img.pro02deleted = false;
-                    _img.pro02created_date = DateTime.Now;
-                    _img.pro02updated_date = DateTime.Now;
-                    _img.pro02created_name = "admin";
-                    _img.pro02updated_name = "admin";
+                        pro02product_files _img = new pro02product_files();
+                        _img.pro02uin = Guid.NewGuid().ToString();
+                        _img.pro02pro01uin = res.ID;
+                        _img.pro02img_path = uploadedPath;
+                        _img.pro02img_name = imgFile!.FileName;
+                        _img.pro02status = true;
+                        _img.pro02deleted = false;
+                        _img.pro02created_date = DateTime.Now;
+                        _img.pro02updated_date = DateTime.Now;
+                        _img.pro02created_name = "admin";
+                        _img.pro02updated_name = "admin";
 
-                    _dbcontext.pro02product_files.Add(_img);
+                        _dbcontext.pro02product_files.Add(_img);
+                    }
                 }
+                    // Add new images from new image file
+                    
                 _dbcontext.pro02product_files.UpdateRange(old_files_DB);
                 _dbcontext.pro01product.Update(proDetails);
                 _dbcontext.SaveChanges();

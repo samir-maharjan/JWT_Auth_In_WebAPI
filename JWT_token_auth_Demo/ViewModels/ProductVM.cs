@@ -26,6 +26,19 @@ namespace JWT_token_auth_Demo.ViewModels
 
     }
 
+    public class ProductSearchVM
+    {
+        public string CategoryId { get; set; }
+        public string SubCategoryId { get; set; }
+        public int? RoomCount { get; set; }
+        public int? BathRoomCount { get; set; }
+        public int? ParkingCount { get; set; }
+        public double? MinPrice { get; set; }
+        public double? MaxPrice { get; set; }
+        public double? MinArea { get; set; }
+        public double? MaxArea { get; set; }
+    }
+
     public class ProductFileVM
     {
         public List<IFormFile>? ImgFile { get; set; }
